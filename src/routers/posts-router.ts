@@ -3,6 +3,7 @@ import {HTTP_STATUSES} from "../index";
 import {authMiddleware} from "../uath/middleware/auth-middliware";
 import {body} from "express-validator";
 import {inputValidationMiddleware} from "../uath/middleware/input-post-vaditation-middleware";
+import {blogs} from "./blogs-router";
 
 export const postsRouter = Router({})
 type BlogType = {
@@ -74,9 +75,15 @@ postsRouter.post(
         .isString().withMessage('should be string')
         .isLength({min: 1, max: 1000}).withMessage('min 1, max 1000 symbols'),
     body('blogId')
-        .isString().withMessage('should be string'),
+        .isString().withMessage('should be string')
+        .custom(({}, {req}) => {
+            const blogIdArr = blogs.map((blog) =>  blog.id)
+            if(!blogIdArr.find((id) => id === req.body.id)) {
+                throw new Error('incorrect BlogID');
+            }
+            return true
+        }),
     inputValidationMiddleware
-    // .isLength({min: 1, max: 1000}).withMessage('min 1, max 1000 symbols')
     ,
     (req: Request, res: Response) => {
         const newPost: BlogType = {
