@@ -1,8 +1,7 @@
 import {Request, Response, Router} from "express";
 import {authMiddleware} from "../uath/middleware/auth-middliware";
 import {HTTP_STATUSES} from "../index";
-import {body, validationResult} from "express-validator";
-import {customValidationResult} from "../helpers/custom-validation-result";
+import {body} from "express-validator";
 import {inputValidationMiddleware} from "../uath/middleware/input-post-vaditation-middleware";
 
 export let blogs = [
@@ -69,8 +68,8 @@ blogsRouter.post(
         .isLength({min: 1, max: 100}).withMessage('min 1, max 500 symbols')
         .custom(({}, {req}) => {
             // let regex = new RegExp(/^https://([a-zA-Z0-9_-]+\\.)+[a-zA-Z0-9_-]+(\\/[a-zA-Z0-9_-]+)*\\/?$)
-            let regex = new RegExp(/^((https?):\/\/)?([w|W]{3}\.)+[a-zA-Z0-9\-\.]{3,}\.[a-zA-Z]{2,}(\.[a-zA-Z]{2,})?$/)
-            if (!regex.test(req.body.websiteUrl)) {
+            // let regex = new RegExp(/^((https?):\/\/)?([w|W]{3}\.)+[a-zA-Z0-9\-\.]{3,}\.[a-zA-Z]{2,}(\.[a-zA-Z]{2,})?$/)
+            if (!/https:\/\/([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$/.test(req.body.websiteUrl)) {
                 throw new Error('incorrect url');
             }
             return true
@@ -102,13 +101,13 @@ blogsRouter.put(
         .isString().withMessage('should be string')
         .isLength({min: 1, max: 100}).withMessage('min 1, max 500 symbols')
         .custom(({}, {req}) => {
-            // let regex = new RegExp(/^https://([a-zA-Z0-9_-]+\\.)+[a-zA-Z0-9_-]+(\\/[a-zA-Z0-9_-]+)*\\/?$)
-            let regex = new RegExp(/^((https?):\/\/)?([w|W]{3}\.)+[a-zA-Z0-9\-\.]{3,}\.[a-zA-Z]{2,}(\.[a-zA-Z]{2,})?$/)
-            if (!regex.test(req.body.websiteUrl)) {
+            // let regex = /https:\/\/([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$/
+            if (!/https:\/\/([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$/.test(req.body.websiteUrl)) {
                 throw new Error('incorrect url');
             }
             return true
-        }),
+        })
+    ,
     inputValidationMiddleware,
     (req: Request, res: Response) => {
         let blog = blogs.find(({id}) => id === req.params.id)
