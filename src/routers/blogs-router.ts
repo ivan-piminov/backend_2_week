@@ -67,8 +67,6 @@ blogsRouter.post(
         .isString().withMessage('should be string')
         .isLength({min: 1, max: 100}).withMessage('min 1, max 500 symbols')
         .custom(({}, {req}) => {
-            // let regex = new RegExp(/^https://([a-zA-Z0-9_-]+\\.)+[a-zA-Z0-9_-]+(\\/[a-zA-Z0-9_-]+)*\\/?$)
-            // let regex = new RegExp(/^((https?):\/\/)?([w|W]{3}\.)+[a-zA-Z0-9\-\.]{3,}\.[a-zA-Z]{2,}(\.[a-zA-Z]{2,})?$/)
             if (!/https:\/\/([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$/.test(req.body.websiteUrl)) {
                 throw new Error('incorrect url');
             }
@@ -101,7 +99,6 @@ blogsRouter.put(
         .isString().withMessage('should be string')
         .isLength({min: 1, max: 100}).withMessage('min 1, max 500 symbols')
         .custom(({}, {req}) => {
-            // let regex = /https:\/\/([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$/
             if (!/https:\/\/([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$/.test(req.body.websiteUrl)) {
                 throw new Error('incorrect url');
             }
