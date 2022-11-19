@@ -59,6 +59,7 @@ blogsRouter.post(
     /* вынести валидацию - одинаковая в post и update */
     body('name')
         .isString().withMessage('should be string')
+        .trim()
         .isLength({min: 1, max: 15}).withMessage('min 1, max 15 symbols'),
     body('description')
         .isString().withMessage('should be string')
@@ -91,6 +92,7 @@ blogsRouter.put(
     authMiddleware,
     body('name')
         .isString().withMessage('should be string')
+        .trim()
         .isLength({min: 1, max: 15}).withMessage('min 1, max 15 symbols'),
     body('description')
         .isString().withMessage('should be string')

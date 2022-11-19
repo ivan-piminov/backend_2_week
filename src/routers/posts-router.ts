@@ -1,8 +1,7 @@
 import {Request, Response, Router} from "express";
 import {HTTP_STATUSES} from "../index";
 import {authMiddleware} from "../uath/middleware/auth-middliware";
-import {body, validationResult} from "express-validator";
-import {customValidationResult} from "../helpers/custom-validation-result";
+import {body} from "express-validator";
 import {inputValidationMiddleware} from "../uath/middleware/input-post-vaditation-middleware";
 
 export const postsRouter = Router({})
@@ -66,6 +65,7 @@ postsRouter.post(
     authMiddleware,
     body('title')
         .isString().withMessage('should be string')
+        .trim()
         .isLength({min: 1, max: 30}).withMessage('min 1, max 30 symbols'),
     body('shortDescription')
         .isString().withMessage('should be string')
@@ -97,6 +97,7 @@ postsRouter.put(
     authMiddleware,
     body('title')
         .isString().withMessage('should be string')
+        .trim()
         .isLength({min: 1, max: 30}).withMessage('min 1, max 30 symbols'),
     body('shortDescription')
         .isString().withMessage('should be string')
