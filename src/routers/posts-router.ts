@@ -75,13 +75,20 @@ postsRouter.post(
         .isString().withMessage('should be string')
         .isLength({min: 1, max: 1000}).withMessage('min 1, max 1000 symbols'),
     body('blogId')
-        .isString().withMessage('should be string'),
+        .isString().withMessage('should be string')
+        .custom(({}, {req}) => {
+            const blogIdArr = blogs.map((blog) => blog.id)
+            if (!blogIdArr.find((id) => id === req.body.id)) {
+                throw new Error('incorrect BlogID');
+            }
+            return true
+        }),
     inputValidationMiddleware,
     (req: Request, res: Response) => {
-        const blogIdArr = blogs.map((blog) =>  blog.id)
-        if(!blogIdArr.find((id) => id === req.body.blogId)) {
-            return res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
-        }
+        // const blogIdArr = blogs.map((blog) => blog.id)
+        // if (!blogIdArr.find((id) => id === req.body.blogId)) {
+        //     return res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
+        // }
         const newPost: BlogType = {
             title: req.body.title,
             shortDescription: req.body.shortDescription,
@@ -109,17 +116,24 @@ postsRouter.put(
         .isString().withMessage('should be string')
         .isLength({min: 1, max: 1000}).withMessage('min 1, max 1000 symbols'),
     body('blogId')
-        .isString().withMessage('should be string'),
+        .isString().withMessage('should be string')
+        .custom(({}, {req}) => {
+            const blogIdArr = blogs.map((blog) => blog.id)
+            if (!blogIdArr.find((id) => id === req.body.id)) {
+                throw new Error('incorrect BlogID');
+            }
+            return true
+        }),
     inputValidationMiddleware,
     (req: Request, res: Response) => {
 
-    let post = posts.find(({id}) => id === req.params.id)
-    if (post) {
-        post.title = req.body.title
-        post.shortDescription = req.body.shortDescription
-        post.content = req.body.content
-        post.blogId = req.body.blogId
-        return res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
-    }
-    return res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
-})
+        let post = posts.find(({id}) => id === req.params.id)
+        if (post) {
+            post.title = req.body.title
+            post.shortDescription = req.body.shortDescription
+            post.content = req.body.content
+            post.blogId = req.body.blogId
+            return res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
+        }
+        return res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
+    })
