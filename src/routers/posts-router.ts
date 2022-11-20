@@ -75,17 +75,13 @@ postsRouter.post(
         .isString().withMessage('should be string')
         .isLength({min: 1, max: 1000}).withMessage('min 1, max 1000 symbols'),
     body('blogId')
-        .isString().withMessage('should be string')
-        .custom(({}, {req}) => {
-            const blogIdArr = blogs.map((blog) =>  blog.id)
-            if(!blogIdArr.find((id) => id === req.body.id)) {
-                throw new Error('incorrect BlogID');
-            }
-            return true
-        }),
-    inputValidationMiddleware
-    ,
+        .isString().withMessage('should be string'),
+    inputValidationMiddleware,
     (req: Request, res: Response) => {
+        const blogIdArr = blogs.map((blog) =>  blog.id)
+        if(!blogIdArr.find((id) => id === req.body.id)) {
+            return res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
+        }
         const newPost: BlogType = {
             title: req.body.title,
             shortDescription: req.body.shortDescription,
