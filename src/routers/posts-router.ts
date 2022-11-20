@@ -78,7 +78,7 @@ postsRouter.post(
         .isString().withMessage('should be string')
         .custom(({}, {req}) => {
             const blogIdArr = blogs.map((blog) => blog.id)
-            if (!blogIdArr.find((id) => id === req.body.id)) {
+            if (!blogIdArr.find((id) => id === req.body.blogId)) {
                 throw new Error('incorrect BlogID');
             }
             return true
