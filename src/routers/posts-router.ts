@@ -79,7 +79,7 @@ postsRouter.post(
     inputValidationMiddleware,
     (req: Request, res: Response) => {
         const blogIdArr = blogs.map((blog) =>  blog.id)
-        if(!blogIdArr.find((id) => id === req.body.id)) {
+        if(!blogIdArr.find((id) => id === req.body.blogId)) {
             return res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
         }
         const newPost: BlogType = {
