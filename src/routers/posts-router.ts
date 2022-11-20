@@ -111,12 +111,15 @@ postsRouter.put(
         .isLength({min: 1, max: 30}).withMessage('min 1, max 30 symbols'),
     body('shortDescription')
         .isString().withMessage('should be string')
+        .trim()
         .isLength({min: 1, max: 100}).withMessage('min 1, max 100 symbols'),
     body('content')
         .isString().withMessage('should be string')
+        .trim()
         .isLength({min: 1, max: 1000}).withMessage('min 1, max 1000 symbols'),
     body('blogId')
         .isString().withMessage('should be string')
+        .trim()
         .custom(({}, {req}) => {
             const blogIdArr = blogs.map((blog) => blog.id)
             if (!blogIdArr.find((id) => id === req.body.blogId)) {

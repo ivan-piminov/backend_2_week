@@ -63,9 +63,11 @@ blogsRouter.post(
         .isLength({min: 1, max: 15}).withMessage('min 1, max 15 symbols'),
     body('description')
         .isString().withMessage('should be string')
+        .trim()
         .isLength({min: 1, max: 500}).withMessage('min 1, max 500 symbols'),
     body('websiteUrl')
         .isString().withMessage('should be string')
+        .trim()
         .isLength({min: 1, max: 100}).withMessage('min 1, max 500 symbols')
         .custom(({}, {req}) => {
             if (!/https:\/\/([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$/.test(req.body.websiteUrl)) {
