@@ -1,53 +1,25 @@
 import {Request, Response, Router} from "express";
-import {authMiddleware} from "../uath/middleware/auth-middliware";
-import {HTTP_STATUSES} from "../index";
+import {authMiddleware} from "../auth/middleware/auth-middliware";
+import {HTTP_STATUSES} from "../helpers/HTTP-statuses";
 import {body} from "express-validator";
-import {inputValidationMiddleware} from "../uath/middleware/input-post-vaditation-middleware";
+import {inputValidationMiddleware} from "../auth/middleware/input-post-vaditation-middleware";
+import {blogsRepository} from "../repositories/blogs-repository";
 
-export let blogs = [
-    {
-        id: "1",
-        name: "hello",
-        description: 'fgggggg',
-        websiteUrl: "aaaa.ru"
-    },
-    {
-        id: "2",
-        name: "hi33",
-        description: 'ttttt',
-        websiteUrl: "bbbb.ru"
-    },
-    {
-        id: "3",
-        name: "welcome",
-        description: '898989',
-        websiteUrl: "ccc.ru"
-    }
-
-]
-export const deletedBlogsData = () => blogs = []
-type BlogType = {
-    name: string,
-    description: string,
-    websiteUrl: string,
-    id: string
-}
 export const blogsRouter = Router({})
 
 blogsRouter.get('/', (req: Request, res: Response) => {
-    res.status(HTTP_STATUSES.OK_200).send(blogs)
+    res.status(HTTP_STATUSES.OK_200).send(blogsRepository.getBlogs())
 })
 blogsRouter.get('/:id', (req: Request, res: Response) => {
-    const blog = blogs.find(({id}) => id === req.params.id)
+    const blog = blogsRepository.getBlog( req.params.id)
     if (blog) {
         return res.status(HTTP_STATUSES.OK_200).send(blog)
     }
     return res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
-
 })
 blogsRouter.delete('/:id', authMiddleware, (req: Request, res: Response) => {
-    if (blogs.find(({id}) => id === req.params.id)) {
-        blogs = blogs.filter(({id}) => id !== req.params.id)
+    const blogs = blogsRepository.deleteBlog(req.params.id)
+    if (blogs) {
         return res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
     }
     return res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
@@ -77,16 +49,13 @@ blogsRouter.post(
         }),
     inputValidationMiddleware,
     (req: Request, res: Response) => {
-
-        const newBlog: BlogType = {
-            name: req.body.name,
-            description: req.body.description,
-            websiteUrl: req.body.websiteUrl,
-            id: new Date().toISOString()
-        }
-        blogs.push(newBlog)
+      const newBlog = blogsRepository.addPost(
+          req.body.name,
+          req.body.description,
+          req.body.websiteUrl,
+          new Date().toISOString()
+      )
         res.status(HTTP_STATUSES.CREATED_201).send(newBlog)
-
     })
 blogsRouter.put(
     '/:id',
@@ -111,11 +80,10 @@ blogsRouter.put(
     ,
     inputValidationMiddleware,
     (req: Request, res: Response) => {
-        let blog = blogs.find(({id}) => id === req.params.id)
+        const {id} = req.params
+        const {name,description, websiteUrl} = req.body
+        const blog = blogsRepository.updatePost(name, description, websiteUrl, id)
         if (blog) {
-            blog.name = req.body.name
-            blog.description = req.body.description
-            blog.websiteUrl = req.body.websiteUrl
             return res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
         }
         return res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)

@@ -1,20 +1,13 @@
 import express, {Request, Response} from 'express'
-import {blogsRouter, deletedBlogsData} from "./routers/blogs-router";
-import {deletedPostsData, postsRouter} from "./routers/posts-router";
+import {blogsRouter} from "./routers/blogs-router";
+import {postsRouter} from "./routers/posts-router";
+import {HTTP_STATUSES} from "./helpers/HTTP-statuses";
+import {deletedPostsData} from "./repositories/post-repository";
+import {deletedBlogsData} from "./repositories/blogs-repository";
 const app = express()
 const port = process.env.port ||  3003
 
 app.use(express.json())
-
-export const HTTP_STATUSES = {
-    OK_200: 200,
-    CREATED_201: 201,
-    NO_CONTENT_204: 204,
-
-    NOT_FOUND_404: 404,
-    BAD_REQUEST_400: 400,
-    UNAUTHORIZED_401: 401,
-}
 
 app.delete('/testing/all-data', (req: Request, res: Response) => {
     deletedBlogsData()
