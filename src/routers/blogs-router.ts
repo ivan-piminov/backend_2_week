@@ -7,19 +7,20 @@ import {blogsRepository} from "../repositories/blogs-repository";
 
 export const blogsRouter = Router({})
 
-blogsRouter.get('/', (req: Request, res: Response) => {
-    res.status(HTTP_STATUSES.OK_200).send(blogsRepository.getBlogs())
+blogsRouter.get('/', async (req: Request, res: Response) => {
+    const blogs = await blogsRepository.getBlogs()
+    res.status(HTTP_STATUSES.OK_200).send(blogs)
 })
-blogsRouter.get('/:id', (req: Request, res: Response) => {
-    const blog = blogsRepository.getBlog( req.params.id)
+blogsRouter.get('/:id', async (req: Request, res: Response) => {
+    const blog = await blogsRepository.getBlog(req.params.id)
     if (blog) {
         return res.status(HTTP_STATUSES.OK_200).send(blog)
     }
     return res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
 })
-blogsRouter.delete('/:id', authMiddleware, (req: Request, res: Response) => {
-    const blogs = blogsRepository.deleteBlog(req.params.id)
-    if (blogs) {
+blogsRouter.delete('/:id', authMiddleware, async (req: Request, res: Response) => {
+    const isDeleted = await blogsRepository.deleteBlog(req.params.id)
+    if (isDeleted) {
         return res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
     }
     return res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
@@ -48,13 +49,13 @@ blogsRouter.post(
             return true
         }),
     inputValidationMiddleware,
-    (req: Request, res: Response) => {
-      const newBlog = blogsRepository.addPost(
-          req.body.name,
-          req.body.description,
-          req.body.websiteUrl,
-          new Date().toISOString()
-      )
+    async (req: Request, res: Response) => {
+        const newBlog = await blogsRepository.addPost(
+            req.body.name,
+            req.body.description,
+            req.body.websiteUrl,
+            new Date().toISOString()
+        )
         res.status(HTTP_STATUSES.CREATED_201).send(newBlog)
     })
 blogsRouter.put(
@@ -79,11 +80,11 @@ blogsRouter.put(
         })
     ,
     inputValidationMiddleware,
-    (req: Request, res: Response) => {
+    async (req: Request, res: Response) => {
         const {id} = req.params
-        const {name,description, websiteUrl} = req.body
-        const blog = blogsRepository.updatePost(name, description, websiteUrl, id)
-        if (blog) {
+        const {name, description, websiteUrl} = req.body
+        const isUpdated = await blogsRepository.updatePost(name, description, websiteUrl, id)
+        if (isUpdated) {
             return res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
         }
         return res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)

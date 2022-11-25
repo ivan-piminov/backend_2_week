@@ -24,22 +24,24 @@ export let blogs = [
 export const deletedBlogsData = () => blogs = []
 
 export const blogsRepository = {
-    getBlogs() {
-        return blogs
+    async getBlogs(): Promise<BlogType[]> {
+        return  blogs
     },
-    getBlog(idReq: string) {
+    async getBlog(idReq: string): Promise<BlogType | null> {
         const blog = blogs.find(({id}) => id === idReq)
         if (blog) {
             return blog
         }
+        return null
     },
-    deleteBlog(idReq: string) {
+    async deleteBlog(idReq: string): Promise<boolean | null> {
         if (blogs.find(({id}) => id === idReq)) {
             blogs = blogs.filter(({id}) => id !== idReq)
-            return blogs
+            return true
         }
+        return null
     },
-    addPost(name: string, description: string, websiteUrl: string, id: string) {
+    async addPost(name: string, description: string, websiteUrl: string, id: string): Promise<BlogType> {
         const newBlog: BlogType = {
             name,
             description,
@@ -49,13 +51,14 @@ export const blogsRepository = {
         blogs.push(newBlog)
         return newBlog
     },
-    updatePost(name: string, description: string, websiteUrl: string, idReq: string) {
+    async updatePost(name: string, description: string, websiteUrl: string, idReq: string): Promise<boolean | null> {
         let blog = blogs.find(({id}) => id === idReq)
         if (blog) {
             blog.name = name
             blog.description = description
             blog.websiteUrl = websiteUrl
-            return blog
+            return true
         }
+        return null
     }
 }
