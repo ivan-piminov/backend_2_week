@@ -29,27 +29,29 @@ export let posts = [
 export const deletedPostsData = () => posts = []
 
 export const postRepository = {
-    getPosts() {
+    async getPosts(): Promise<PostType[]> {
         return posts
     },
-    getPost(idReq: string) {
+    async getPost(idReq: string): Promise<PostType | null> {
         const post = posts.find(({id}) => id === idReq)
         if (post) {
             return post
         }
+        return null
     },
-    deletePost(idReq: string) {
+    async deletePost(idReq: string): Promise<null| boolean> {
         if (posts.find(({id}) => id === idReq)) {
             posts = posts.filter(({id}) => id !== idReq)
-            return posts
+            return true
         }
+        return null
     },
-    addPost(
+    async addPost(
         title: string,
         shortDescription: string,
         content: string,
         blogIdReq: string,
-    ) {
+    ): Promise<PostType> {
         const newPost: PostType = {
             title,
             shortDescription,
@@ -62,21 +64,22 @@ export const postRepository = {
         posts.push(newPost)
         return newPost
     },
-    updatePost(
+    async updatePost(
         idReqPost: string,
         title: string,
         shortDescription: string,
         content: string,
         blogId: string
-    ) {
+    ): Promise<boolean | null> {
         let post = posts.find(({id}) => id === idReqPost)
         if (post) {
             post.title = title
             post.shortDescription = shortDescription
             post.content = content
             post.blogId = blogId
-            return post
+            return true
         }
+        return null
     }
 }
 

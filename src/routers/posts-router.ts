@@ -9,20 +9,20 @@ import {postRepository} from "../repositories/post-repository";
 export const postsRouter = Router({})
 
 
-postsRouter.get('/', (req: Request, res: Response) => {
-    res.status(HTTP_STATUSES.OK_200).send(postRepository.getPosts())
+postsRouter.get('/', async (req: Request, res: Response) => {
+    const posts = await postRepository.getPosts()
+    res.status(HTTP_STATUSES.OK_200).send(posts)
 })
-postsRouter.get('/:id', (req: Request, res: Response) => {
-    const post = postRepository.getPost(req.params.id)
+postsRouter.get('/:id', async (req: Request, res: Response) => {
+    const post = await postRepository.getPost(req.params.id)
     if (post) {
         res.status(HTTP_STATUSES.OK_200).send(post)
     }
     /* не обработан кейс Bad Request см доку */
     return res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
 })
-postsRouter.delete('/:id', authMiddleware, (req: Request, res: Response) => {
-    const posts = postRepository.deletePost(req.params.id)
-    if (posts) {
+postsRouter.delete('/:id', authMiddleware, async (req: Request, res: Response) => {
+    if (await postRepository.deletePost(req.params.id)) {
         return res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
     }
     return res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
@@ -53,8 +53,8 @@ postsRouter.post(
             return true
         }),
     inputValidationMiddleware,
-    (req: Request, res: Response) => {
-        const newPost = postRepository.addPost(
+    async (req: Request, res: Response) => {
+        const newPost = await postRepository.addPost(
             req.body.title,
             req.body.shortDescription,
             req.body.content,
@@ -89,8 +89,8 @@ postsRouter.put(
             return true
         }),
     inputValidationMiddleware,
-    (req: Request, res: Response) => {
-        let post = postRepository.updatePost(
+    async (req: Request, res: Response) => {
+        let post = await postRepository.updatePost(
             req.params.id,
             req.body.title,
             req.body.shortDescription,
