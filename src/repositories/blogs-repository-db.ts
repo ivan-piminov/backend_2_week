@@ -1,16 +1,12 @@
 import {BlogType} from "../types/types";
 import {blogsCollection} from "./db";
-import {WithId} from "mongodb";
-
-/* todo не сделан кейс для удаления всех блогов */
-// export const deletedBlogsData = () => __blogs = []
 
 export const blogsRepository = {
-    async getBlogs(): Promise<WithId<BlogType>[]> {
+    async getBlogs(): Promise<BlogType[]> {
         return blogsCollection.find({}).toArray();
     },
     async getBlog(idReq: string): Promise<BlogType | null> {
-        const blog = blogsCollection.findOne({id: idReq})
+        const blog = await blogsCollection.findOne({id: idReq})
         if (blog) {
             return blog
         }

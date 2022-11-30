@@ -7,7 +7,8 @@ export let posts = [
         shortDescription: "aboutDog",
         content: "dgfdgdfdfdfdfd888",
         blogId: "1",
-        blogName: "hello"
+        blogName: "hello",
+        createdAt: '545454'
     },
     {
         id: "5",
@@ -15,7 +16,8 @@ export let posts = [
         shortDescription: "aboutCat",
         content: "ooooooo888",
         blogId: "2",
-        blogName: "hi33"
+        blogName: "hi33",
+        createdAt: '5454548'
     },
     {
         id: "6",
@@ -23,7 +25,8 @@ export let posts = [
         shortDescription: "aboutWolf",
         content: "aboutWolf7878878",
         blogId: "3",
-        blogName: "welcome"
+        blogName: "welcome",
+        createdAt: '5454547979'
     }
 ]
 export const deletedPostsData = () => posts = []
@@ -39,7 +42,7 @@ export const postRepository = {
         }
         return null
     },
-    async deletePost(idReq: string): Promise<null| boolean> {
+    async deletePost(idReq: string): Promise<null | boolean> {
         if (posts.find(({id}) => id === idReq)) {
             posts = posts.filter(({id}) => id !== idReq)
             return true
@@ -57,9 +60,10 @@ export const postRepository = {
             shortDescription,
             content,
             blogId: blogIdReq,
-            id: new Date().toISOString(),
+            id: new Date().getTime().toString(),
             /* убрать потом пустую строку? */
-            blogName: posts.find(({blogId}) => blogId === blogIdReq)?.blogName || ''
+            blogName: posts.find(({blogId}) => blogId === blogIdReq)?.blogName || '',
+            createdAt: new Date().toISOString()
         }
         posts.push(newPost)
         return newPost

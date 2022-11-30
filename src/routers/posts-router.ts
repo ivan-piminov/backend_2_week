@@ -4,7 +4,8 @@ import {authMiddleware} from "../auth/middleware/auth-middliware";
 import {body} from "express-validator";
 import {inputValidationMiddleware} from "../auth/middleware/input-post-vaditation-middleware";
 import {blogs} from "../repositories/blogs-repository";
-import {postRepository} from "../repositories/post-repository";
+import {postRepository} from "../repositories/post-repository-db";
+// import {postRepository} from "../repositories/post-repository";
 
 export const postsRouter = Router({})
 
@@ -60,8 +61,10 @@ postsRouter.post(
             req.body.content,
             req.body.blogId
         )
-        res.status(HTTP_STATUSES.CREATED_201).send(newPost)
-
+        if (newPost) {
+            res.status(HTTP_STATUSES.CREATED_201).send(newPost)
+        }
+        return res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
     })
 postsRouter.put(
     '/:id',

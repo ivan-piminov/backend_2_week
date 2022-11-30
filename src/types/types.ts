@@ -11,5 +11,6 @@ export type PostType = {
     content: string,
     blogId: string,
     id: string,
-    blogName: string
+    blogName: string,
+    createdAt: string
 }
