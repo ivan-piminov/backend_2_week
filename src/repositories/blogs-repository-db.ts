@@ -3,12 +3,17 @@ import {blogsCollection} from "./db";
 
 export const blogsRepository = {
     async getBlogs(): Promise<BlogType[]> {
-        return blogsCollection.find({}).toArray();
+        const blogs =  await blogsCollection.find({}).toArray();
+        return blogs.map(blog => {
+            const {_id, ...rest} = blog
+            return rest
+        })
     },
     async getBlog(idReq: string): Promise<BlogType | null> {
         const blog = await blogsCollection.findOne({id: idReq})
         if (blog) {
-            return blog
+            const {_id, ...rest} = blog
+            return rest
         }
         return null
     },
@@ -16,7 +21,7 @@ export const blogsRepository = {
         const result = await blogsCollection.deleteOne({id: idReq})
         return result.deletedCount === 1
     },
-    async addBlog(name: string, description: string, websiteUrl: string): Promise<BlogType> {
+    async addBlog(name: string, description: string, websiteUrl: string): Promise<BlogType | null> {
         const newBlog: BlogType = {
             name,
             description,
@@ -25,7 +30,10 @@ export const blogsRepository = {
             createdAt: new Date().toISOString()
         }
         await blogsCollection.insertOne(newBlog)
-        return newBlog
+        const result = await blogsCollection.findOne({id: newBlog.id})
+        // @ts-ignore
+        const {_id, ...rest} = result
+        return rest
     },
     async updateBlog(name: string, description: string, websiteUrl: string, idReq: string): Promise<boolean> {
         let result = await blogsCollection.updateOne(

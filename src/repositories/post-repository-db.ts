@@ -3,12 +3,17 @@ import {blogsCollection, postsCollection} from "./db";
 
 export const postRepository = {
     async getPosts(): Promise<PostType[]> {
-        return await postsCollection.find({}).toArray()
+        const posts = await postsCollection.find({}).toArray()
+        return posts.map(post => {
+            const {_id, ...rest} = post
+            return rest
+        })
     },
     async getPost(idReq: string): Promise<PostType | null> {
         const post = await postsCollection.findOne({id: idReq})
         if (post) {
-            return post
+            const {_id, ...rest} = post
+            return rest
         }
         return null
     },
@@ -34,7 +39,10 @@ export const postRepository = {
                 blogName: blog.name
             }
             await postsCollection.insertOne(newPost)
-            return newPost
+            const result = await postsCollection.findOne({id: newPost.id})
+            // @ts-ignore
+            const {_id, ...rest} = result
+            return rest
         }
         return false
     },
