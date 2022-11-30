@@ -11,6 +11,7 @@ const port = process.env.port || 3003
 
 app.use(express.json())
 
+/* todo нужно зарефакторить */
 app.delete('/testing/all-data', (req: Request, res: Response) => {
     deletedBlogsData()
     deletedPostsData()

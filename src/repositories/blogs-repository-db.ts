@@ -31,7 +31,7 @@ export const blogsRepository = {
         await blogsCollection.insertOne(newBlog)
         return newBlog
     },
-    async updateBlogs(name: string, description: string, websiteUrl: string, idReq: string): Promise<boolean> {
+    async updateBlog(name: string, description: string, websiteUrl: string, idReq: string): Promise<boolean> {
         let result = await blogsCollection.updateOne(
             {id: idReq},
             {$set: {name, description, websiteUrl}})

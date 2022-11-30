@@ -84,7 +84,7 @@ blogsRouter.put(
     async (req: Request, res: Response) => {
         const {id} = req.params
         const {name, description, websiteUrl} = req.body
-        const isUpdated = await blogsRepository.updateBlogs(name, description, websiteUrl, id)
+        const isUpdated = await blogsRepository.updateBlog(name, description, websiteUrl, id)
         if (isUpdated) {
             return res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
         }
