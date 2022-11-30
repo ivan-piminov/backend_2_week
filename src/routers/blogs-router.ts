@@ -3,7 +3,9 @@ import {authMiddleware} from "../auth/middleware/auth-middliware";
 import {HTTP_STATUSES} from "../helpers/HTTP-statuses";
 import {body} from "express-validator";
 import {inputValidationMiddleware} from "../auth/middleware/input-post-vaditation-middleware";
-import {blogsRepository} from "../repositories/blogs-repository";
+import {blogsRepository} from "../repositories/blogs-repository-db";
+
+// import {blogsRepository} from "../repositories/blogs-repository";
 
 export const blogsRouter = Router({})
 
@@ -50,11 +52,10 @@ blogsRouter.post(
         }),
     inputValidationMiddleware,
     async (req: Request, res: Response) => {
-        const newBlog = await blogsRepository.addPost(
+        const newBlog = await blogsRepository.addBlog(
             req.body.name,
             req.body.description,
-            req.body.websiteUrl,
-            new Date().toISOString()
+            req.body.websiteUrl
         )
         res.status(HTTP_STATUSES.CREATED_201).send(newBlog)
     })
@@ -83,7 +84,7 @@ blogsRouter.put(
     async (req: Request, res: Response) => {
         const {id} = req.params
         const {name, description, websiteUrl} = req.body
-        const isUpdated = await blogsRepository.updatePost(name, description, websiteUrl, id)
+        const isUpdated = await blogsRepository.updateBlogs(name, description, websiteUrl, id)
         if (isUpdated) {
             return res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
         }

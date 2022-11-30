@@ -1,14 +1,17 @@
 import {MongoClient} from 'mongodb'
-const mongoUri = process.env.mongoUri || 'mongodb+srv://lesson_3:hometask@cluster0.out97bu.mongodb.net/?retryWrites=true&w=majority'
+import {BlogType} from "../types/types";
 
-const client = new MongoClient(mongoUri)
+const mongoUri = process.env.mongoUri || 'mongodb+srv://lesson_3:qwerty123@cluster0.out97bu.mongodb.net/?retryWrites=true&w=majority'
+export const client = new MongoClient(mongoUri)
+const db = client.db('social')
+export const blogsCollection = db.collection<BlogType>('blogs')
+
 export const runDb = async () => {
-    try{
+    try {
         await client.connect()
-        await client.db('lesson_3').command({ping: 1})
+        await client.db('social').command({ping: 1})
         console.log('Соединение установлено')
-    }
-    catch {
+    } catch {
         console.log('Error!!!')
         await client.close()
     }
