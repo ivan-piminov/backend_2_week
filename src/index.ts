@@ -8,8 +8,8 @@ import cors from 'cors'
 const app = express()
 const port = process.env.port || 3003
 
-app.use(express.json())
 app.use(cors())
+app.use(express.json())
 app.use('/testing', deleteRouter)
 app.use('/blogs', blogsRouter)
 app.use('/posts', postsRouter)
