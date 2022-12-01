@@ -66,5 +66,6 @@ export const postRepository = {
         )
         return post.matchedCount === 1
     }
+
 }
 
