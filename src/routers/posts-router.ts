@@ -86,9 +86,10 @@ postsRouter.put(
     body('blogId')
         .isString().withMessage('should be string')
         .trim()
-        .custom(({}, {req}) => {
-            const blogIdArr = blogs.map((blog) => blog.id)
-            if (!blogIdArr.find((id) => id === req.body.blogId)) {
+        .custom(async ({}, {req}) => {
+            /* обращение из бд при валидации? так можно/нужно? */
+            const blog = await blogsCollection.findOne({id: req.body.blogId})
+            if (!blog) {
                 throw new Error('incorrect BlogID');
             }
             return true
