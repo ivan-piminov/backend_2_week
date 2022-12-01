@@ -27,6 +27,7 @@ export const postRepository = {
         content: string,
         blogIdReq: string,
     ): Promise<PostType | boolean> {
+        /* можно удлаить, есть проверка в валидации */
         const blog = await blogsCollection.findOne({id: blogIdReq})
         if (blog) {
             const newPost: PostType = {
