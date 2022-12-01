@@ -62,7 +62,6 @@ blogsRouter.post(
 blogsRouter.put(
     '/:id',
     authMiddleware,
-    authMiddleware,
     body('name')
         .isString().withMessage('should be string')
         .trim()
