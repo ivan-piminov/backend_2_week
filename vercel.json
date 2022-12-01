@@ -5,6 +5,15 @@
     { "src": "src/index.ts", "use": "@vercel/node" }
   ],
   "routes": [
-    { "src": "/(.*)", "dest": "src/index.ts" }
+    { "src": "/(.*)", "dest": "src/index.ts",
+    "headers": {
+      "cache-control": "s-maxage=604800",
+      "X-Frame-Options": "sameorigin",
+      "X-Content-Type-Options": "nosniff",
+      "Feature-Policy": "microphone 'none'; camera 'none'; vibrate 'none'; payment 'none'; gyroscope 'none'; push 'none'",
+      "x-xss-protection": "1; mode=block",
+      "Referrer-Policy": "no-referrer-when-downgrade",
+      "Content-Security-Policy": "default-src 'self'; child-src 'self'; font-src 'self'; form-action 'self'; frame-src 'self'; img-src 'self' cdn.domain.com; object-src 'none'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-eval' 'sha256-blablah=' "
+    }}
   ]
 }
