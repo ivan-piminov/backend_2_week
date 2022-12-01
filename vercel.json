@@ -5,6 +5,17 @@
     { "src": "src/index.ts", "use": "@vercel/node" }
   ],
   "routes": [
-    { "src": "/(.*)", "dest": "src/index.ts"}
+    {
+      "src": "/(.*)",
+      "dest": "src/index.ts",
+      "headers": {
+        "cache-control": "s-maxage=604800",
+        "X-Frame-Options": "sameorigin",
+        "X-Content-Type-Options": "nosniff",
+        "Feature-Policy": "microphone 'none'; camera 'none'; vibrate 'none'; payment 'none'; gyroscope 'none'; push 'none'",
+        "x-xss-protection": "1; mode=block",
+        "Referrer-Policy": "no-referrer-when-downgrade",
+        "Content-Security-Policy": "default-src 'self' cdn.jsdelivr.net; script-src 'self' cdn.jsdelivr.net embed.tawk.to js.paystack.co www.google-analytics.com www.googletagmanager.com 'unsafe-inline' 'unsafe-eval'; connect-src 'self' eljsuiwhwbb5lp5lmre5eifzuu.appsync-api.us-east-1.amazonaws.com embed.tawk.to va.tawk.to vitals.vercel-insights.com vsb75.tawk.to vsb89.tawk.to www.google-analytics.com wss://eljsuiwhwbb5lp5lmre5eifzuu.appsync-realtime-api.us-east-1.amazonaws.com wss://vsb75.tawk.to wss://vsb89.tawk.to; style-src 'self' 'unsafe-inline' cdn.jsdelivr.net embed.tawk.to fonts.googleapis.com; img-src 'self' data: embed.tawk.to res.cloudinary.com tawk.link www.google-analytics.com;"
+      }}
   ]
 }
