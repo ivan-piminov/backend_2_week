@@ -57,7 +57,6 @@ postsRouter.post(
         }),
     inputValidationMiddleware,
     async (req: Request, res: Response) => {
-        res.setHeader('Access-Control-Allow-Origin', '*')
         const newPost = await postRepository.addPost(
             req.body.title,
             req.body.shortDescription,
@@ -98,7 +97,6 @@ postsRouter.put(
         }),
     inputValidationMiddleware,
     async (req: Request, res: Response) => {
-        res.setHeader('Access-Control-Allow-Origin', '*')
         let post = await postRepository.updatePost(
             req.params.id,
             req.body.title,
