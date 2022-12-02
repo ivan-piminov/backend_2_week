@@ -65,7 +65,8 @@ postsRouter.post(
             req.body.blogId
         )
         if (newPost) {
-            res.status(HTTP_STATUSES.CREATED_201).send(newPost)
+            return res.status(HTTP_STATUSES.CREATED_201).send(newPost)
+
         }
         return res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
     })
