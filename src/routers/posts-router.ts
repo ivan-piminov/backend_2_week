@@ -13,12 +13,12 @@ export const postsRouter = Router({})
 
 postsRouter.get('/', async (req: Request, res: Response) => {
     const posts = await postRepository.getPosts()
-    res.status(HTTP_STATUSES.OK_200).send(posts)
+    return  res.status(HTTP_STATUSES.OK_200).send(posts)
 })
 postsRouter.get('/:id', async (req: Request, res: Response) => {
     const post = await postRepository.getPost(req.params.id)
     if (post) {
-        res.status(HTTP_STATUSES.OK_200).send(post)
+       return  res.status(HTTP_STATUSES.OK_200).send(post)
     }
     /* не обработан кейс Bad Request см доку */
     return res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)

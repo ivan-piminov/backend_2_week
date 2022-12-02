@@ -57,7 +57,7 @@ blogsRouter.post(
             req.body.description,
             req.body.websiteUrl
         )
-        res.status(HTTP_STATUSES.CREATED_201).send(newBlog)
+       return res.status(HTTP_STATUSES.CREATED_201).send(newBlog)
     })
 blogsRouter.put(
     '/:id',
