@@ -57,6 +57,7 @@ postsRouter.post(
         }),
     inputValidationMiddleware,
     async (req: Request, res: Response) => {
+        if(req.method === 'OPTIONS') { return res.status(200).json(({ body: "OK" })) }
         const newPost = await postRepository.addPost(
             req.body.title,
             req.body.shortDescription,
