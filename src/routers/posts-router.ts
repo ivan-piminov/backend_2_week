@@ -3,28 +3,26 @@ import {HTTP_STATUSES} from "../helpers/HTTP-statuses";
 import {authMiddleware} from "../auth/middleware/auth-middliware";
 import {body} from "express-validator";
 import {inputValidationMiddleware} from "../auth/middleware/input-post-vaditation-middleware";
-import {blogs} from "../repositories/memory/blogs-repository";
-import {postRepository} from "../repositories/post-repository-db";
+import {postService} from "../domains/posts-service";
 import {blogsCollection} from "../repositories/db";
-// import {postRepository} from "../repositories/post-repository";
 
 export const postsRouter = Router({})
 
 
 postsRouter.get('/', async (req: Request, res: Response) => {
-    const posts = await postRepository.getPosts()
-    return  res.status(HTTP_STATUSES.OK_200).send(posts)
+    const posts = await postService.getPosts()
+    return res.status(HTTP_STATUSES.OK_200).send(posts)
 })
 postsRouter.get('/:id', async (req: Request, res: Response) => {
-    const post = await postRepository.getPost(req.params.id)
+    const post = await postService.getPost(req.params.id)
     if (post) {
-       return  res.status(HTTP_STATUSES.OK_200).send(post)
+        return res.status(HTTP_STATUSES.OK_200).send(post)
     }
     /* не обработан кейс Bad Request см доку */
     return res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
 })
 postsRouter.delete('/:id', authMiddleware, async (req: Request, res: Response) => {
-    if (await postRepository.deletePost(req.params.id)) {
+    if (await postService.deletePost(req.params.id)) {
         return res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
     }
     return res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
@@ -57,17 +55,13 @@ postsRouter.post(
         }),
     inputValidationMiddleware,
     async (req: Request, res: Response) => {
-        const newPost = await postRepository.addPost(
+        const newPost = await postService.addPost(
             req.body.title,
             req.body.shortDescription,
             req.body.content,
             req.body.blogId
         )
-        if (newPost) {
-            return res.status(HTTP_STATUSES.CREATED_201).send(newPost)
-
-        }
-        return res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
+        return res.status(HTTP_STATUSES.CREATED_201).send(newPost)
     })
 postsRouter.put(
     '/:id',
@@ -97,7 +91,7 @@ postsRouter.put(
         }),
     inputValidationMiddleware,
     async (req: Request, res: Response) => {
-        let post = await postRepository.updatePost(
+        let post = await postService.updatePost(
             req.params.id,
             req.body.title,
             req.body.shortDescription,
