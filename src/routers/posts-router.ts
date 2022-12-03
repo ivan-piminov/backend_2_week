@@ -3,7 +3,7 @@ import {HTTP_STATUSES} from "../helpers/HTTP-statuses";
 import {authMiddleware} from "../auth/middleware/auth-middliware";
 import {body} from "express-validator";
 import {inputValidationMiddleware} from "../auth/middleware/input-post-vaditation-middleware";
-import {blogs} from "../repositories/blogs-repository";
+import {blogs} from "../repositories/memory/blogs-repository";
 import {postRepository} from "../repositories/post-repository-db";
 import {blogsCollection} from "../repositories/db";
 // import {postRepository} from "../repositories/post-repository";

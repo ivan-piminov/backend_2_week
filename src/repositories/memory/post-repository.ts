@@ -1,4 +1,4 @@
-import {PostType} from "../types/types";
+import {PostType} from "../../types/types";
 
 export let posts = [
     {

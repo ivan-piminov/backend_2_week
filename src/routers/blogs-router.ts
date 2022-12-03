@@ -3,25 +3,23 @@ import {authMiddleware} from "../auth/middleware/auth-middliware";
 import {HTTP_STATUSES} from "../helpers/HTTP-statuses";
 import {body} from "express-validator";
 import {inputValidationMiddleware} from "../auth/middleware/input-post-vaditation-middleware";
-import {blogsRepository} from "../repositories/blogs-repository-db";
-
-// import {blogsRepository} from "../repositories/blogs-repository";
+import {blogsService} from "../domains/blogs-service";
 
 export const blogsRouter = Router({})
 
 blogsRouter.get('/', async (req: Request, res: Response) => {
-    const blogs = await blogsRepository.getBlogs()
+    const blogs = await blogsService.getBlogs()
     res.status(HTTP_STATUSES.OK_200).send(blogs)
 })
 blogsRouter.get('/:id', async (req: Request, res: Response) => {
-    const blog = await blogsRepository.getBlog(req.params.id)
+    const blog = await blogsService.getBlog(req.params.id)
     if (blog) {
         return res.status(HTTP_STATUSES.OK_200).send(blog)
     }
     return res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
 })
 blogsRouter.delete('/:id', authMiddleware, async (req: Request, res: Response) => {
-    const isDeleted = await blogsRepository.deleteBlog(req.params.id)
+    const isDeleted = await blogsService.deleteBlog(req.params.id)
     if (isDeleted) {
         return res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
     }
@@ -52,7 +50,7 @@ blogsRouter.post(
         }),
     inputValidationMiddleware,
     async (req: Request, res: Response) => {
-        const newBlog = await blogsRepository.addBlog(
+        const newBlog = await blogsService.addBlog(
             req.body.name,
             req.body.description,
             req.body.websiteUrl
@@ -83,7 +81,7 @@ blogsRouter.put(
     async (req: Request, res: Response) => {
         const {id} = req.params
         const {name, description, websiteUrl} = req.body
-        const isUpdated = await blogsRepository.updateBlog(name, description, websiteUrl, id)
+        const isUpdated = await blogsService.updateBlog(name, description, websiteUrl, id)
         if (isUpdated) {
             return res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
         }

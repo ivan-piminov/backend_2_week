@@ -1,4 +1,4 @@
-import {BlogType} from "../types/types";
+import {BlogType} from "../../types/types";
 
 export let blogs = [
     {
