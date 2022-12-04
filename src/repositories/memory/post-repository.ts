@@ -1,4 +1,12 @@
-import {PostType} from "../../types/types";
+export type PostType = {
+    title: string,
+    shortDescription: string,
+    content: string,
+    blogId: string,
+    id: string,
+    blogName: string,
+    createdAt: string
+}
 
 export let posts = [
     {

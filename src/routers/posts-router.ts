@@ -5,16 +5,18 @@ import {body} from "express-validator";
 import {inputValidationMiddleware} from "../auth/middleware/input-post-vaditation-middleware";
 import {postService} from "../domains/posts-service";
 import {blogsCollection} from "../repositories/db";
+import {postQueryService} from "../queryRepositories/post-query-repository";
+import {PostType} from "../repositories/post-repository-db";
 
 export const postsRouter = Router({})
 
 
 postsRouter.get('/', async (req: Request, res: Response) => {
-    const posts = await postService.getPosts()
+    const posts = await postQueryService.getPosts()
     return res.status(HTTP_STATUSES.OK_200).send(posts)
 })
 postsRouter.get('/:id', async (req: Request, res: Response) => {
-    const post = await postService.getPost(req.params.id)
+    const post = await postQueryService.getPost(req.params.id)
     if (post) {
         return res.status(HTTP_STATUSES.OK_200).send(post)
     }
@@ -55,7 +57,7 @@ postsRouter.post(
         }),
     inputValidationMiddleware,
     async (req: Request, res: Response) => {
-        const newPost = await postService.addPost(
+        const newPost: PostType | null = await postService.addPost(
             req.body.title,
             req.body.shortDescription,
             req.body.content,
@@ -91,7 +93,7 @@ postsRouter.put(
         }),
     inputValidationMiddleware,
     async (req: Request, res: Response) => {
-        let post = await postService.updatePost(
+        let post: boolean | null = await postService.updatePost(
             req.params.id,
             req.body.title,
             req.body.shortDescription,

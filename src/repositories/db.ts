@@ -1,5 +1,6 @@
 import {MongoClient} from 'mongodb'
-import {BlogType, PostType} from "../types/types";
+import {BlogType} from "../types/types";
+import {PostType} from "./post-repository-db";
 
 const mongoUri = process.env.mongoUri || 'mongodb+srv://lesson_3:qwerty123@cluster0.out97bu.mongodb.net/?retryWrites=true&w=majority'
 export const client = new MongoClient(mongoUri)

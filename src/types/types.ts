@@ -5,12 +5,3 @@ export type BlogType = {
     id: string,
     createdAt: string
 }
-export type PostType = {
-    title: string,
-    shortDescription: string,
-    content: string,
-    blogId: string,
-    id: string,
-    blogName?: string,
-    createdAt: string
-}

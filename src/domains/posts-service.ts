@@ -1,13 +1,11 @@
-import {PostType} from "../types/types";
-import {postRepository} from "../repositories/post-repository-db";
-
+import {postRepository, PostType} from "../repositories/post-repository-db";
+export type PostInputModelType = {
+    title: string,
+    shortDescription: string,
+    content: string,
+    blogId: string,
+}
 export const postService = {
-    async getPosts(): Promise<PostType[]> {
-        return await postRepository.getPosts()
-    },
-    async getPost(idReq: string): Promise<PostType | null> {
-        return await postRepository.getPost(idReq)
-    },
     async deletePost(idReq: string): Promise<boolean> {
         return await postRepository.deletePost(idReq)
     },
@@ -17,7 +15,7 @@ export const postService = {
         content: string,
         blogIdReq: string,
     ): Promise<PostType | null> {
-            const newPost: PostType = {
+            const newPost = {
                 title,
                 shortDescription,
                 content,
