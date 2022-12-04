@@ -2,12 +2,6 @@ import {BlogType} from "../types/types";
 import {blogsRepository} from "../repositories/blogs-repository-db";
 
 export const blogsService = {
-    async getBlogs(): Promise<BlogType[]> {
-        return await blogsRepository.getBlogs()
-    },
-    async getBlog(idReq: string): Promise<BlogType | null> {
-        return await blogsRepository.getBlog(idReq)
-    },
     async deleteBlog(idReq: string): Promise<boolean> {
         return await blogsRepository.deleteBlog(idReq)
     },

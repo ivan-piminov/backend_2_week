@@ -2,12 +2,6 @@ import {BlogType} from "../types/types";
 import {blogsCollection} from "./db";
 
 export const blogsRepository = {
-    async getBlogs(): Promise<BlogType[]> {
-        return await blogsCollection.find({},{projection: {_id: false}}).toArray();
-    },
-    async getBlog(idReq: string): Promise<BlogType | null> {
-        return await blogsCollection.findOne({id: idReq}, {projection: {_id: false}})
-    },
     async deleteBlog(idReq: string): Promise<boolean> {
         const result = await blogsCollection.deleteOne({id: idReq})
         return result.deletedCount === 1

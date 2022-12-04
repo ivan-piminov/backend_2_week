@@ -4,15 +4,16 @@ import {HTTP_STATUSES} from "../helpers/HTTP-statuses";
 import {body} from "express-validator";
 import {inputValidationMiddleware} from "../auth/middleware/input-post-vaditation-middleware";
 import {blogsService} from "../domains/blogs-service";
+import {blogsQueryRepository} from "../queryRepositories/blod-query-repository";
 
 export const blogsRouter = Router({})
 
 blogsRouter.get('/', async (req: Request, res: Response) => {
-    const blogs = await blogsService.getBlogs()
+    const blogs = await blogsQueryRepository.getBlogs()
     res.status(HTTP_STATUSES.OK_200).send(blogs)
 })
 blogsRouter.get('/:id', async (req: Request, res: Response) => {
-    const blog = await blogsService.getBlog(req.params.id)
+    const blog = await blogsQueryRepository.getBlog(req.params.id)
     if (blog) {
         return res.status(HTTP_STATUSES.OK_200).send(blog)
     }
