@@ -7,12 +7,18 @@ import {postService} from "../domains/posts-service";
 import {blogsCollection} from "../repositories/db";
 import {postQueryService} from "../queryRepositories/post-query-repository";
 import {PostType} from "../repositories/post-repository-db";
+import {blogsQueryRepository} from "../queryRepositories/blog-query-repository";
 
 export const postsRouter = Router({})
 
 
 postsRouter.get('/', async (req: Request, res: Response) => {
-    const posts = await postQueryService.getPosts()
+    const posts = await postQueryService.getPosts(
+        req.query.pageNumber as string,
+        req.query.pageSize as string,
+        req.query.sortBy as string,
+        req.query.sortDirection as string,
+    )
     return res.status(HTTP_STATUSES.OK_200).send(posts)
 })
 postsRouter.get('/:id', async (req: Request, res: Response) => {

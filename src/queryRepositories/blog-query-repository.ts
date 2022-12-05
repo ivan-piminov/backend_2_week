@@ -25,9 +25,9 @@ export const blogsQueryRepository = {
             pageSize: Number(pageSize),
             totalCount,
             items: await blogsCollection.find({}, {projection: {_id: false}})
+                .sort({sortBy: sortDirection === 'asc' ? -1 : 1})
                 .skip(skip)
                 .limit(Number(pageSize))
-                .sort({sortBy: sortDirection === 'asc' ? 1 : -1})
                 .toArray()
         }
     },
