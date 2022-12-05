@@ -4,13 +4,26 @@ import {HTTP_STATUSES} from "../helpers/HTTP-statuses";
 import {body} from "express-validator";
 import {inputValidationMiddleware} from "../auth/middleware/input-post-vaditation-middleware";
 import {blogsService} from "../domains/blogs-service";
-import {blogsQueryRepository} from "../queryRepositories/blod-query-repository";
+import {blogsQueryRepository} from "../queryRepositories/blog-query-repository";
 
 export const blogsRouter = Router({})
 
 blogsRouter.get('/', async (req: Request, res: Response) => {
     const blogs = await blogsQueryRepository.getBlogs()
     res.status(HTTP_STATUSES.OK_200).send(blogs)
+})
+blogsRouter.get('/:blogId/posts', async (req: Request, res: Response) => {
+    const posts = await blogsQueryRepository.getPostsFromBlog(
+        req.query.pageNumber as string,
+        req.query.pageSize as string,
+        req.query.sortBy as string,
+        req.query.sortDirection as string,
+        req.params.blogId
+    )
+    if (posts) {
+        return res.status(HTTP_STATUSES.OK_200).send(posts)
+    }
+    return res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
 })
 blogsRouter.get('/:id', async (req: Request, res: Response) => {
     const blog = await blogsQueryRepository.getBlog(req.params.id)
@@ -56,7 +69,7 @@ blogsRouter.post(
             req.body.description,
             req.body.websiteUrl
         )
-       return res.status(HTTP_STATUSES.CREATED_201).send(newBlog)
+        return res.status(HTTP_STATUSES.CREATED_201).send(newBlog)
     })
 blogsRouter.put(
     '/:id',
