@@ -5,6 +5,7 @@ import {body} from "express-validator";
 import {inputValidationMiddleware} from "../auth/middleware/input-post-vaditation-middleware";
 import {blogsService} from "../domains/blogs-service";
 import {blogsQueryRepository} from "../queryRepositories/blog-query-repository";
+import {PostType} from "../repositories/post-repository-db";
 
 export const blogsRouter = Router({})
 
@@ -70,6 +71,33 @@ blogsRouter.post(
             req.body.websiteUrl
         )
         return res.status(HTTP_STATUSES.CREATED_201).send(newBlog)
+    })
+blogsRouter.post(
+    '/:blogId/posts',
+    authMiddleware,
+    body('title')
+        .isString().withMessage('should be string')
+        .trim()
+        .isLength({min: 1, max: 30}).withMessage('min 1, max 30 symbols'),
+    body('shortDescription')
+        .isString().withMessage('should be string')
+        .trim()
+        .isLength({min: 1, max: 100}).withMessage('min 1, max 100 symbols'),
+    body('content')
+        .isString().withMessage('should be string')
+        .trim()
+        .isLength({min: 1, max: 1000}).withMessage('min 1, max 1000 symbols'),
+    async (req: Request, res: Response) => {
+        const newPost: PostType | null = await blogsService.addPostOnExistBlog(
+            req.body.title,
+            req.body.shortDescription,
+            req.body.content,
+            req.params.blogId
+        )
+        if (newPost) {
+            return res.status(HTTP_STATUSES.CREATED_201).send(newPost)
+        }
+        return res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
     })
 blogsRouter.put(
     '/:id',
