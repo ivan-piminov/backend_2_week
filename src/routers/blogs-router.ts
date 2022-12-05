@@ -10,7 +10,14 @@ import {PostType} from "../repositories/post-repository-db";
 export const blogsRouter = Router({})
 
 blogsRouter.get('/', async (req: Request, res: Response) => {
-    const blogs = await blogsQueryRepository.getBlogs()
+    const blogs = await blogsQueryRepository.getBlogs(
+        req.query.pageNumber as string,
+        req.query.pageSize as string,
+        req.query.sortBy as string,
+        req.query.sortDirection as string,
+        req.params.blogId
+    )
+    // const blogs = await blogsQueryRepository.getBlogs()
     res.status(HTTP_STATUSES.OK_200).send(blogs)
 })
 blogsRouter.get('/:blogId/posts', async (req: Request, res: Response) => {
