@@ -87,6 +87,7 @@ blogsRouter.post(
         .isString().withMessage('should be string')
         .trim()
         .isLength({min: 1, max: 1000}).withMessage('min 1, max 1000 symbols'),
+    inputValidationMiddleware,
     async (req: Request, res: Response) => {
         const newPost: PostType | null = await blogsService.addPostOnExistBlog(
             req.body.title,
