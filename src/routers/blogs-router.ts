@@ -15,9 +15,7 @@ blogsRouter.get('/', async (req: Request, res: Response) => {
         req.query.pageSize as string,
         req.query.sortBy as string,
         req.query.sortDirection as string,
-        req.params.blogId
     )
-    // const blogs = await blogsQueryRepository.getBlogs()
     res.status(HTTP_STATUSES.OK_200).send(blogs)
 })
 blogsRouter.get('/:blogId/posts', async (req: Request, res: Response) => {
