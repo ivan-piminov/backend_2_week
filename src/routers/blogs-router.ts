@@ -11,6 +11,7 @@ export const blogsRouter = Router({})
 
 blogsRouter.get('/', async (req: Request, res: Response) => {
     const blogs = await blogsQueryRepository.getBlogs(
+        req.query.searchNameTerm as string | null,
         req.query.pageNumber as string,
         req.query.pageSize as string,
         req.query.sortBy as string,

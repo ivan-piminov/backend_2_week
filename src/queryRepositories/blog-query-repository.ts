@@ -12,6 +12,7 @@ type PaginatorPostsAndBlogsType<T> = {
 
 export const blogsQueryRepository = {
     async getBlogs(
+        searchNameTerm: string | null,
         pageNumber: string = '1',
         pageSize: string = '10',
         sortBy: string = 'createdAt',
@@ -24,8 +25,8 @@ export const blogsQueryRepository = {
             page: Number(pageNumber),
             pageSize: Number(pageSize),
             totalCount,
-            items: await blogsCollection.find({}, {projection: {_id: false}})
-                .sort({[sortBy]: sortDirection === 'desc' ? -1 : 1})
+            items: await blogsCollection.find(searchNameTerm ? {name: { $regex: searchNameTerm }} : {}, {projection: {_id: false}})
+                .sort({[sortBy]: sortDirection === 'asc' ? 1 : -1})
                 .skip(skip)
                 .limit(Number(pageSize))
                 .toArray()
@@ -51,7 +52,7 @@ export const blogsQueryRepository = {
                 pageSize: Number(pageSize),
                 totalCount,
                 items: await postsCollection.find({blogId}, {projection: {_id: false}})
-                    .sort({[sortBy]: sortDirection === 'desc' ? -1 : 1})
+                    .sort({[sortBy]: sortDirection === 'asc' ? 1 : -1})
                     .skip(skip)
                     .limit(Number(pageSize))
                     .toArray()

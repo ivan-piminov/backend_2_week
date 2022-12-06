@@ -23,8 +23,9 @@ export const postQueryService = {
             page: Number(pageNumber),
             pageSize: Number(pageSize),
             totalCount,
-            items: await postsCollection.find({}, {projection: {_id: false}})
-                .sort({[sortBy]: sortDirection === 'desc' ? -1 : 1})
+            items: await postsCollection
+                .find({}, {projection: {_id: false}})
+                .sort({[sortBy]: sortDirection === 'asc' ? 1 : -1})
                 .skip(skip)
                 .limit(Number(pageSize))
                 .toArray()
