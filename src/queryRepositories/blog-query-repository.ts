@@ -25,7 +25,7 @@ export const blogsQueryRepository = {
             page: Number(pageNumber),
             pageSize: Number(pageSize),
             totalCount,
-            items: await blogsCollection.find(searchNameTerm ? {name: { $regex: searchNameTerm }, $options:'i'} : {}, {projection: {_id: false}})
+            items: await blogsCollection.find(searchNameTerm ? {name: { $regex: searchNameTerm, $options:'i' }} : {}, {projection: {_id: false}})
                 .sort({[sortBy]: sortDirection === 'asc' ? 1 : -1})
                 .skip(skip)
                 .limit(Number(pageSize))
