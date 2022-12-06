@@ -53,7 +53,7 @@ export const blogsQueryRepository = {
                 items: await postsCollection.find({blogId}, {projection: {_id: false}})
                     .skip(skip)
                     .limit(Number(pageSize))
-                    .sort({sortBy: sortDirection === 'asc' ? 1 : -1})
+                    .sort({sortBy: sortDirection === 'asc' ? -1 : 1})
                     .toArray()
             }
         }
