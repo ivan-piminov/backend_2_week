@@ -25,7 +25,7 @@ export const blogsQueryRepository = {
             pageSize: Number(pageSize),
             totalCount,
             items: await blogsCollection.find({}, {projection: {_id: false}})
-                .sort({sortBy: sortDirection === 'desc' ? -1 : 1})
+                .sort({[sortBy]: sortDirection === 'desc' ? -1 : 1})
                 .skip(skip)
                 .limit(Number(pageSize))
                 .toArray()
@@ -51,9 +51,9 @@ export const blogsQueryRepository = {
                 pageSize: Number(pageSize),
                 totalCount,
                 items: await postsCollection.find({blogId}, {projection: {_id: false}})
+                    .sort({[sortBy]: sortDirection === 'desc' ? -1 : 1})
                     .skip(skip)
                     .limit(Number(pageSize))
-                    .sort({[sortBy]: sortDirection === 'desc' ? -1 : 1})
                     .toArray()
             }
         }
