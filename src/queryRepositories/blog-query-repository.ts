@@ -18,7 +18,7 @@ export const blogsQueryRepository = {
         sortBy: string = 'createdAt',
         sortDirection: string = 'desc',
     ): Promise<PaginatorPostsAndBlogsType<BlogType[]>> {
-        const totalCount = await blogsCollection.count({});
+        const totalCount = await blogsCollection.count(searchNameTerm ? {name: { $regex: searchNameTerm, $options:'i' }} : {});
         const skip = (Number(pageNumber) - 1) * Number(pageSize)
         return {
             pagesCount: Math.ceil(totalCount / Number(pageSize)),
