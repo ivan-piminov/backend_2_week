@@ -16,7 +16,10 @@ export const postRepository = {
         const result = await postsCollection.deleteOne({id: idReq})
         return result.deletedCount === 1
     },
-    async addPost(newPost: PostInputModelType & {id: string, createdAt: string }): Promise<PostType | null> {
+    async deleteAllPosts(): Promise<{}> {
+        return await postsCollection.deleteMany({})
+    },
+    async addPost(newPost: PostInputModelType & { id: string, createdAt: string }): Promise<PostType | null> {
         await postsCollection.insertOne(newPost)
         return await postsCollection.findOne({id: newPost.id}, {projection: {_id: false}})
     },

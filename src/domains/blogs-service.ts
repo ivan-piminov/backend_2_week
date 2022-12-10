@@ -7,6 +7,9 @@ export const blogsService = {
     async deleteBlog(idReq: string): Promise<boolean> {
         return await blogsRepository.deleteBlog(idReq)
     },
+    async deleteAllBlogs(): Promise<{}> {
+        return await blogsRepository.deleteAllBlogs()
+    },
     async addBlog(
         name: string,
         description: string,
@@ -32,7 +35,7 @@ export const blogsService = {
             return null
         }
         const newPostId = new Date().getTime().toString()
-         await postsCollection.insertOne({
+        await postsCollection.insertOne({
             id: newPostId,
             title,
             shortDescription,

@@ -7,7 +7,6 @@ import {postService} from "../domains/posts-service";
 import {blogsCollection} from "../repositories/db";
 import {postQueryService} from "../queryRepositories/post-query-repository";
 import {PostType} from "../repositories/post-repository-db";
-import {blogsQueryRepository} from "../queryRepositories/blog-query-repository";
 
 export const postsRouter = Router({})
 

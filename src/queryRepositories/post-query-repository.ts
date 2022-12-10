@@ -1,13 +1,6 @@
 import {postsCollection} from "../repositories/db";
 import {PostType} from "../repositories/post-repository-db";
-
-type PaginatorPostsAndBlogsType = {
-    pagesCount: number,
-    page: number,
-    pageSize: number,
-    totalCount: number,
-    items: PostType[]
-}
+import {PaginatorType} from "./types";
 
 export const postQueryService = {
     async getPosts(
@@ -15,7 +8,7 @@ export const postQueryService = {
         pageSize: string = '10',
         sortBy: string = 'createdAt',
         sortDirection: string = 'desc',
-    ): Promise<PaginatorPostsAndBlogsType> {
+    ): Promise<PaginatorType<PostType[]>> {
         const totalCount = await postsCollection.count({});
         const skip = (Number(pageNumber) - 1) * Number(pageSize)
         return {

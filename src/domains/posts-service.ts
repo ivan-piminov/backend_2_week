@@ -1,5 +1,6 @@
 import {postRepository, PostType} from "../repositories/post-repository-db";
 import {blogsCollection} from "../repositories/db";
+
 export type PostInputModelType = {
     title: string,
     shortDescription: string,
@@ -10,6 +11,9 @@ export const postService = {
     async deletePost(idReq: string): Promise<boolean> {
         return await postRepository.deletePost(idReq)
     },
+    async deleteAllPosts(): Promise<{}> {
+        return await postRepository.deleteAllPosts()
+    },
     async addPost(
         title: string,
         shortDescription: string,
@@ -17,16 +21,16 @@ export const postService = {
         blogIdReq: string,
     ): Promise<PostType | null> {
         const blog = await blogsCollection.findOne({id: blogIdReq})
-            const newPost = {
-                title,
-                shortDescription,
-                content,
-                blogId: blogIdReq,
-                blogName: blog && blog.name,
-                id: new Date().getTime().toString(),
-                createdAt: new Date().toISOString(),
-            }
-            return await postRepository.addPost(newPost)
+        const newPost = {
+            title,
+            shortDescription,
+            content,
+            blogId: blogIdReq,
+            blogName: blog && blog.name,
+            id: new Date().getTime().toString(),
+            createdAt: new Date().toISOString(),
+        }
+        return await postRepository.addPost(newPost)
     },
     async updatePost(
         idReqPost: string,
