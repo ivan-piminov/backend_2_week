@@ -29,7 +29,7 @@ export const userQueryService = {
             pageSize: Number(pageSize),
             totalCount,
             items: await usersCollection.find(searchLoginTerm || searchEmailTerm
-                    ? {$or: [{login: {$regex: searchLoginTerm || ''}}, {email: {$regex: searchEmailTerm || ''}}]}
+                    ? {$or: [{login: {$regex: searchLoginTerm || '', $options: 'i'}}, {email: {$regex: searchEmailTerm || ''}}]}
                     : {},
                 {projection: {_id: false, passwordHash: false, passwordSalt: false}})
                 .sort({[sortBy]: sortDirection === 'asc' ? 1 : -1})
