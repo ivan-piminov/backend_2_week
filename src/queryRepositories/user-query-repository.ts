@@ -20,7 +20,7 @@ export const userQueryService = {
         searchEmailTerm: string | null = null
     ): Promise<PaginatorType<UsersType[]>> {
         const totalCount = searchLoginTerm || searchEmailTerm
-            ? await usersCollection.count({$or: [{login: {$regex: searchLoginTerm || ''}}, {email: {$regex: searchEmailTerm || ''}}]})
+            ? await usersCollection.count({$or: [{login: {$regex: searchLoginTerm || '',$options: 'i'}}, {email: {$regex: searchEmailTerm || ''}}]})
             : await usersCollection.count({});
         const skip = (Number(pageNumber) - 1) * Number(pageSize)
         return {
