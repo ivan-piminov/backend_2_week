@@ -1,10 +1,8 @@
-import {validationResult} from "express-validator";
+import { validationResult } from 'express-validator';
 
 export const customValidationResult = validationResult.withDefaults({
-    formatter: error => {
-        return {
-            message: error.msg,
-            field: error.param
-        };
-    },
+  formatter: (error) => ({
+    message: error.msg,
+    field: error.param,
+  }),
 });
