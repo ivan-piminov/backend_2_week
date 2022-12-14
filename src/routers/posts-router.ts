@@ -12,6 +12,7 @@ import { postService } from '../domains/posts-service';
 import { blogsCollection } from '../repositories/db';
 import { postQueryService } from '../queryRepositories/post-query-repository';
 import { PostType } from '../repositories/post-repository-db';
+import { authMiddlewareJWT } from '../auth/middleware/auth-miidleware-jwt';
 
 export const postsRouter = Router({});
 
@@ -118,6 +119,47 @@ postsRouter.put(
     );
     if (post) {
       return res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
+    }
+    return res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
+  },
+);
+/* добавление коммента */
+postsRouter.post(
+  '/:postId/comments',
+  body('content')
+    .isString().withMessage('should be string')
+    .trim()
+    .isLength({ min: 20, max: 300 })
+    .withMessage('min 20, max 300 symbols'),
+  inputValidationMiddleware,
+  authMiddlewareJWT,
+  async (req: Request, res: Response) => {
+    const newComment = await postService.addComment(
+      req.body.content,
+      req.params.postId,
+      /* id и логин точно есть, т.к. наличие юзера проверяется в authMiddlewareJWT */
+      req.user!.id,
+      req.user!.login,
+    );
+    if (newComment) {
+      return res.status(HTTP_STATUSES.CREATED_201).send(newComment);
+    }
+    return res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
+  },
+);
+/* получение коммента */
+postsRouter.get(
+  '/:postId/comments',
+  async (req: Request, res: Response) => {
+    const posts = await postQueryService.getComments(
+          req.params.postId as string,
+          req.query.pageNumber as string,
+          req.query.pageSize as string,
+          req.query.sortBy as string,
+          req.query.sortDirection as string,
+    );
+    if (posts) {
+      return res.status(HTTP_STATUSES.OK_200).send(posts);
     }
     return res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
   },

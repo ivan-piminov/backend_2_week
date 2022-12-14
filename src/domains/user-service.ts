@@ -31,7 +31,10 @@ export const userService = {
     const user = await userRepository.findByLoginOrEmail(loginOrEmail);
     if (!user) return false;
     const passwordHashCurrent = await this._generateHash(password, user.passwordSalt);
-    return passwordHashCurrent === user.passwordHash;
+    if (passwordHashCurrent === user.passwordHash) {
+      return user;
+    }
+    return false;
   },
   async _generateHash(password: string, salt: string) {
     return await bcrypt.hash(password, salt);

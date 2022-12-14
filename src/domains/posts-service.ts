@@ -47,4 +47,19 @@ export const postService = {
       blogId,
     );
   },
+  async addComment(
+    content: string,
+    postId: string,
+    userId: string,
+    userLogin: string,
+  ) {
+    const newComment = {
+      content,
+      userId,
+      userLogin,
+      id: new Date().getTime().toString(),
+      createdAt: new Date().toISOString(),
+    };
+    return await postRepository.addComment(newComment, postId);
+  },
 };

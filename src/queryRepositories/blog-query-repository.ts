@@ -39,11 +39,11 @@ export const blogsQueryRepository = {
     return await blogsCollection.findOne({ id: idReq }, { projection: { _id: false } });
   },
   async getPostsFromBlog(
+    blogId: string,
     pageNumber = '1',
     pageSize = '10',
     sortBy = 'createdAt',
     sortDirection = 'desc',
-    blogId: string,
   ): Promise<PaginatorType<PostType[]> | null> {
     const isBlogExist = await blogsCollection.findOne({ id: blogId });
     if (isBlogExist) {

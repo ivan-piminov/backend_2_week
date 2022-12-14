@@ -33,7 +33,11 @@ export const userQueryService = {
       totalCount,
       items: await usersCollection.find(
         searchLoginTerm || searchEmailTerm
-          ? { $or: [{ login: { $regex: searchLoginTerm || '', $options: 'i' } }, { email: { $regex: searchEmailTerm || '' } }] }
+          ? {
+            $or: [
+              { login: { $regex: searchLoginTerm || '', $options: 'i' } },
+              { email: { $regex: searchEmailTerm || '' } }],
+          }
           : {},
         { projection: { _id: false, passwordHash: false, passwordSalt: false } },
       )
@@ -42,5 +46,15 @@ export const userQueryService = {
         .limit(Number(pageSize))
         .toArray(),
     };
+  },
+  async getUserById(id: string):Promise<UsersType | null> {
+    return await usersCollection.findOne(
+      { id },
+      {
+        projection: {
+          _id: false, passwordHash: false, passwordSalt: false, createdAt: false,
+        },
+      },
+    );
   },
 };

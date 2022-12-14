@@ -1,15 +1,17 @@
 import { MongoClient } from 'mongodb';
 
 import { BlogType } from '../types/types';
-import { PostType } from './post-repository-db';
+import { CommentType, PostType } from './post-repository-db';
 import { UsersType } from '../queryRepositories/user-query-repository';
+import { settings } from '../settings';
 
-const mongoUri = process.env.mongoUri || 'mongodb+srv://lesson_3:qwerty123@cluster0.out97bu.mongodb.net/?retryWrites=true&w=majority';
+const mongoUri = settings.MONGO_URI;
 export const client = new MongoClient(mongoUri);
 const db = client.db('social');
 export const blogsCollection = db.collection<BlogType>('blogs');
 export const postsCollection = db.collection<PostType>('posts');
 export const usersCollection = db.collection<UsersType>('users');
+export const commentsCollection = db.collection<CommentType>('comments');
 
 export const runDb = async () => {
   try {

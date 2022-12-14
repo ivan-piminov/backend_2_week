@@ -22,11 +22,11 @@ blogsRouter.get('/', async (req: Request, res: Response) => {
 });
 blogsRouter.get('/:blogId/posts', async (req: Request, res: Response) => {
   const posts = await blogsQueryRepository.getPostsFromBlog(
+        req.params.blogId as string,
         req.query.pageNumber as string,
         req.query.pageSize as string,
         req.query.sortBy as string,
         req.query.sortDirection as string,
-        req.params.blogId,
   );
   if (posts) {
     return res.status(HTTP_STATUSES.OK_200).send(posts);
