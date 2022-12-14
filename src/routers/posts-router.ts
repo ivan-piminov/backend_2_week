@@ -126,13 +126,13 @@ postsRouter.put(
 /* добавление коммента */
 postsRouter.post(
   '/:postId/comments',
+  authMiddlewareJWT,
   body('content')
     .isString().withMessage('should be string')
     .trim()
     .isLength({ min: 20, max: 300 })
     .withMessage('min 20, max 300 symbols'),
   inputValidationMiddleware,
-  authMiddlewareJWT,
   async (req: Request, res: Response) => {
     const newComment = await postService.addComment(
       req.body.content,
