@@ -2,12 +2,19 @@ import { usersCollection } from '../repositories/db';
 import { PaginatorType } from './types';
 
 export type UsersType = {
-    id: string,
-    login: string,
-    email: string,
-    passwordHash: string,
-    passwordSalt: string,
-    createdAt: string
+    accountData: {
+        login: string,
+        passwordHash: string,
+        passwordSalt: string,
+        email: string,
+        id: string,
+        createdAt: string,
+    },
+    emailConfirmations: {
+        isConfirmed: boolean,
+        confirmationCode: string,
+        expirationDate: Date,
+    }
 }
 
 export const userQueryService = {

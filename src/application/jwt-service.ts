@@ -12,7 +12,11 @@ declare module 'jsonwebtoken' {
 
 export const jwtService = {
   async createJWT(user: UsersType) {
-    return jwt.sign({ userId: user.id }, settings.JWT_SECRET, { expiresIn: '7d' });
+    return jwt.sign(
+      { userId: user.accountData.id },
+      settings.JWT_SECRET,
+      { expiresIn: '7d' },
+    );
   },
   async getUSerIdByToken(token: string) {
     try {

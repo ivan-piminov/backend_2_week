@@ -138,8 +138,8 @@ postsRouter.post(
       req.body.content,
       req.params.postId,
       /* id и логин точно есть, т.к. наличие юзера проверяется в authMiddlewareJWT */
-      req.user!.id,
-      req.user!.login,
+      req.user!.accountData.id,
+      req.user!.accountData.login,
     );
     if (newComment) {
       return res.status(HTTP_STATUSES.CREATED_201).send(newComment);

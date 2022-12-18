@@ -23,7 +23,7 @@ commentsRouter.delete(
   '/:commentId',
   authMiddlewareJWT,
   async (req: Request, res: Response) => {
-    const result = await commentsService.deleteComment(req.params.commentId, req.user!.id);
+    const result = await commentsService.deleteComment(req.params.commentId, req.user!.accountData.id);
     if (result === 1) {
       return res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
     }
@@ -45,7 +45,7 @@ commentsRouter.put(
   async (req: Request, res: Response) => {
     const result = await commentsService.updateComment(
       req.params.commentId,
-      req.user!.id,
+      req.user!.accountData.id,
       req.body.content,
     );
     if (result === 1) {

@@ -49,10 +49,13 @@ usersRouter.post(
     }),
   inputValidationMiddleware,
   async (req: Request, res: Response) => {
+    /* если супер админ добавляет юзера то ответ отличается от обычной регистрации */
+    const createdBySuperAdmin = true;
     const newUser = await userService.addUser(
       req.body.login,
       req.body.password,
       req.body.email,
+      createdBySuperAdmin,
     );
     return res.status(HTTP_STATUSES.CREATED_201).send(newUser);
   },
