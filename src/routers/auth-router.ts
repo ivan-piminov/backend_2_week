@@ -81,7 +81,7 @@ authRouter.post(
     .isString().withMessage('should be string')
     .trim()
     .custom(async ({}, { req }) => {
-      const res = await userService.confirmEmail(req.query!.code);
+      const res = await userService.confirmEmail(req.body.code);
       if (!res) {
         throw new Error('Something wrong');
       }
