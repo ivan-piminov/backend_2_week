@@ -77,17 +77,33 @@ authRouter.post(
 );
 authRouter.post(
   '/registration-confirmation',
-  query('code')
-    .custom(async ({}, { req }) => {
-      const res = await userService.confirmEmail(req.query!.code);
-      if (!res) {
-        throw new Error('Something wrong');
-      }
-      return true;
-    }),
-  inputValidationMiddleware,
-  (req: Request, res: Response) => res.sendStatus(HTTP_STATUSES.NO_CONTENT_204),
+  // query('code')
+  //   .custom(async ({}, { req }) => {
+  //     const res = await userService.confirmEmail(req.query!.code);
+  //     console.log(req.query!.code);
+  //     if (!res) {
+  //       throw new Error('Something wrong');
+  //     }
+  //     return true;
+  //   }),
+  // inputValidationMiddleware,
+  async (req: Request, res: Response) => {
+    const result = await userService.confirmEmail(req.query?.code as string);
+    console.log(req.query!.code);
+    if (!result) {
+      res.status(HTTP_STATUSES.BAD_REQUEST_400).send({
+        errorsMessages: [
+          {
+            message: 'bla',
+            field: 'bla',
+          },
+        ],
+      });
+    }
+    res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
+  },
 );
+
 authRouter.post(
   '/registration-email-resending',
   body('email')
