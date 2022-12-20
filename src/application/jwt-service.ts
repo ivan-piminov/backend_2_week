@@ -18,7 +18,7 @@ export const jwtService = {
       { expiresIn: '7d' },
     );
   },
-  async getUSerIdByToken(token: string) {
+  async getUserIdByToken(token: string) {
     try {
       const result = <jwt.UserIDJwtPayload>jwt.verify(token, settings.JWT_SECRET);
       return result.userId as string;

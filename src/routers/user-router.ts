@@ -2,7 +2,7 @@ import { Request, Response, Router } from 'express';
 import { body } from 'express-validator';
 
 import { HTTP_STATUSES } from '../helpers/HTTP-statuses';
-import { userQueryService } from '../queryRepositories/user-query-repository';
+import { userQueryRepository } from '../queryRepositories/user-query-repository';
 import { authMiddleware } from '../auth/middleware/auth-middliware';
 import { inputValidationMiddleware } from '../auth/middleware/input-post-vaditation-middleware';
 import { userService } from '../domains/user-service';
@@ -10,7 +10,7 @@ import { userService } from '../domains/user-service';
 export const usersRouter = Router({});
 
 usersRouter.get('/', async (req: Request, res: Response) => {
-  const users = await userQueryService.getUsers(
+  const users = await userQueryRepository.getUsers(
         req.query.pageNumber as string,
         req.query.pageSize as string,
         req.query.sortBy as string,

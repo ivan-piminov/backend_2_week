@@ -1,9 +1,10 @@
 import bcrypt from 'bcrypt';
 import { v4 as uuidv4 } from 'uuid';
 import { add } from 'date-fns';
+import { UpdateResult } from 'mongodb';
 
 import { userRepository } from '../repositories/user-repository-db';
-import { UsersType } from '../queryRepositories/user-query-repository';
+import { userQueryRepository, UsersType } from '../queryRepositories/user-query-repository';
 import { EmailAdapter } from '../adapters/email-adapter';
 import { usersCollection } from '../repositories/db';
 
@@ -56,7 +57,7 @@ export const userService = {
       await userRepository.addUser(newUser);
       await EmailAdapter.sendEmail(
         email,
-        `Hello! Here code for Registration ${newUser.emailConfirmations.confirmationCode}`,
+        newUser.emailConfirmations.confirmationCode,
         'Registration',
       );
       return await usersCollection.findOne({ 'accountData.id': newUser.accountData.id });
@@ -65,7 +66,24 @@ export const userService = {
       return null;
     }
   },
-  async checkCredentials(loginOrEmail: string, password: string) {
+  async resendEmail(email: string) {
+    const confirmationCode = uuidv4();
+    try {
+      await EmailAdapter.sendEmail(
+        email,
+        confirmationCode,
+        'Registration',
+      );
+      return await usersCollection.findOneAndUpdate(
+        { 'accountData.email': email },
+        { $set: { 'emailConfirmations.confirmationCode': confirmationCode } },
+      );
+    } catch (e) {
+      console.log(e);
+      return null;
+    }
+  },
+  async checkCredentials(loginOrEmail: string, password: string): Promise<boolean | UsersType> {
     const user = await userRepository.findByLoginOrEmail(loginOrEmail);
     if (!user) return false;
     const passwordHashCurrent = await this._generateHash(password, user.accountData.passwordSalt);
@@ -77,5 +95,12 @@ export const userService = {
   async _generateHash(password: string, salt: string) {
     return await bcrypt.hash(password, salt);
   },
-
+  async confirmEmail(code: string): Promise<boolean | UpdateResult> {
+    const user = await userQueryRepository.findUserByConfirmationCode(code);
+    if (!user) return false;
+    if (user.emailConfirmations.isConfirmed) return false;
+    if (user.emailConfirmations.expirationDate < new Date()) return false;
+    if (user.emailConfirmations.confirmationCode !== code) return false;
+    return await userRepository.updateConfirmation(code);
+  },
 };

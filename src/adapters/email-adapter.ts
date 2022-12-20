@@ -1,7 +1,12 @@
 import nodemailer from 'nodemailer';
+import SMTPTransport from 'nodemailer/lib/smtp-transport';
 
 export const EmailAdapter = {
-  async sendEmail(email: string, message: string, subject: string) {
+  async sendEmail(
+    email: string,
+    code: string,
+    subject: string,
+  ) : Promise<SMTPTransport.SentMessageInfo> {
     const transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
@@ -15,7 +20,7 @@ export const EmailAdapter = {
       subject,
       html: `<h1>Thank for your registration</h1>
        <p>To finish registration please follow the link below:
-          <a href=https://somesite.com/confirm-email?code=${message}'>complete registration</a>
+          <a href='https://somesite.com/confirm-email?code=${code}'>complete registration</a>
       </p>`,
     });
   },

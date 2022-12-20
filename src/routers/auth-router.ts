@@ -1,12 +1,12 @@
 import { Request, Response, Router } from 'express';
-import { body } from 'express-validator';
+import { body, query } from 'express-validator';
 
 import { HTTP_STATUSES } from '../helpers/HTTP-statuses';
 import { inputValidationMiddleware } from '../auth/middleware/input-post-vaditation-middleware';
 import { userService } from '../domains/user-service';
 import { jwtService } from '../application/jwt-service';
 import { authMiddlewareJWT } from '../auth/middleware/auth-miidleware-jwt';
-import { userQueryService } from '../queryRepositories/user-query-repository';
+import { userQueryRepository } from '../queryRepositories/user-query-repository';
 import { usersCollection } from '../repositories/db';
 
 export const authRouter = Router({});
@@ -75,12 +75,48 @@ authRouter.post(
     return res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
   },
 );
+authRouter.post(
+  '/registration-confirmation',
+  query('code')
+    .custom(async ({}, { req }) => {
+      const res = await userService.confirmEmail(req.query!.code);
+      if (!res) {
+        throw new Error('Something wrong');
+      }
+      return true;
+    }),
+  inputValidationMiddleware,
+  (req: Request, res: Response) => res.sendStatus(HTTP_STATUSES.NO_CONTENT_204),
+);
+authRouter.post(
+  '/registration-email-resending',
+  body('email')
+    .isString().withMessage('should be string')
+    .custom(async ({}, { req }) => {
+      const user = await userQueryRepository.findUserByEmail(req.body.email);
+      if (!user || user.emailConfirmations.isConfirmed) {
+        throw new Error('something wrong with email');
+      }
+      if (!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(req.body.email)) {
+        throw new Error('incorrect email');
+      }
+      return true;
+    }),
+  inputValidationMiddleware,
+  async (req: Request, res: Response) => {
+    const result = await userService.resendEmail(req.body.email);
+    if (result) {
+      return res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
+    }
+    return res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
+  },
+);
 authRouter.get(
   '/me',
   authMiddlewareJWT,
   async (req: Request, res: Response) => {
     /* id  и юзера есть, т.к. в authMiddlewareJWT проверяется его наличие */
-    const user = await userQueryService.getUserById(req.user!.accountData.id);
+    const user = await userQueryRepository.getUserById(req.user!.accountData.id);
     return res.status(HTTP_STATUSES.OK_200).send(
       {
         login: user!.accountData.login,

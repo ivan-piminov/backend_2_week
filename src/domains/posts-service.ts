@@ -1,5 +1,6 @@
 import { postRepository, PostType } from '../repositories/post-repository-db';
 import { blogsCollection } from '../repositories/db';
+import {blogsQueryRepository} from "../queryRepositories/blog-query-repository";
 
 export type PostInputModelType = {
     title: string,
@@ -11,6 +12,7 @@ export const postService = {
   async deletePost(idReq: string): Promise<boolean> {
     return await postRepository.deletePost(idReq);
   },
+  // eslint-disable-next-line @typescript-eslint/ban-types
   async deleteAllPosts(): Promise<{}> {
     return await postRepository.deleteAllPosts();
   },
@@ -20,7 +22,7 @@ export const postService = {
     content: string,
     blogIdReq: string,
   ): Promise<PostType | null> {
-    const blog = await blogsCollection.findOne({ id: blogIdReq });
+    const blog = await blogsQueryRepository.getBlog(blogIdReq);
     const newPost = {
       title,
       shortDescription,

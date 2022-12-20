@@ -1,7 +1,8 @@
 import { BlogType } from '../types/types';
 import { blogsRepository } from '../repositories/blogs-repository-db';
-import { blogsCollection, postsCollection } from '../repositories/db';
-import { PostType } from '../repositories/post-repository-db';
+import { postRepository, PostType } from '../repositories/post-repository-db';
+import { blogsQueryRepository } from '../queryRepositories/blog-query-repository';
+import { postQueryRepository } from '../queryRepositories/post-query-repository';
 
 export const blogsService = {
   async deleteBlog(idReq: string): Promise<boolean> {
@@ -31,21 +32,23 @@ export const blogsService = {
     content: string,
     id: string,
   ): Promise<PostType | null> {
-    const blog = await blogsCollection.findOne({ id });
+    // const blog = await blogsCollection.findOne({ id });
+    const blog = await blogsQueryRepository.getBlog(id);
     if (!blog) {
       return null;
     }
     const newPostId = new Date().getTime().toString();
-    await postsCollection.insertOne({
-      id: newPostId,
+    const newPost = {
+      id: new Date().getTime().toString(),
       title,
       shortDescription,
       content,
       blogId: id,
       blogName: blog.name,
       createdAt: new Date().toISOString(),
-    });
-    return postsCollection.findOne({ id: newPostId }, { projection: { _id: false } });
+    };
+    await postRepository.addPost(newPost);
+    return postQueryRepository.getPost(newPostId);
   },
   async updateBlog(
     name: string,
@@ -53,6 +56,11 @@ export const blogsService = {
     websiteUrl: string,
     idReq: string,
   ): Promise<boolean> {
-    return await blogsRepository.updateBlog(name, description, websiteUrl, idReq);
+    return await blogsRepository.updateBlog(
+      name,
+      description,
+      websiteUrl,
+      idReq,
+    );
   },
 };

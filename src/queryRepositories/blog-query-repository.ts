@@ -11,24 +11,31 @@ export const blogsQueryRepository = {
     sortBy = 'createdAt',
     sortDirection = 'desc',
   ): Promise<PaginatorType<BlogType[]>> {
-    const totalCount = await blogsCollection.count(searchNameTerm ? {
-      name: {
-        $regex: searchNameTerm,
-        $options: 'i',
-      },
-    } : {});
+    const totalCount = await blogsCollection.count(searchNameTerm
+      ? {
+        name: {
+          $regex: searchNameTerm,
+          $options: 'i',
+        },
+      }
+      : {});
     const skip = (Number(pageNumber) - 1) * Number(pageSize);
     return {
       pagesCount: Math.ceil(totalCount / Number(pageSize)),
       page: Number(pageNumber),
       pageSize: Number(pageSize),
       totalCount,
-      items: await blogsCollection.find(searchNameTerm ? {
-        name: {
-          $regex: searchNameTerm,
-          $options: 'i',
-        },
-      } : {}, { projection: { _id: false } })
+      items: await blogsCollection.find(
+        searchNameTerm
+          ? {
+            name: {
+              $regex: searchNameTerm,
+              $options: 'i',
+            },
+          }
+          : {},
+        { projection: { _id: false } },
+      )
         .sort({ [sortBy]: sortDirection === 'asc' ? 1 : -1 })
         .skip(skip)
         .limit(Number(pageSize))
@@ -36,7 +43,10 @@ export const blogsQueryRepository = {
     };
   },
   async getBlog(idReq: string): Promise<BlogType | null> {
-    return await blogsCollection.findOne({ id: idReq }, { projection: { _id: false } });
+    return await blogsCollection.findOne(
+      { id: idReq },
+      { projection: { _id: false } },
+    );
   },
   async getPostsFromBlog(
     blogId: string,

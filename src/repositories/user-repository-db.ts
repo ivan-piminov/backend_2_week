@@ -1,5 +1,8 @@
+import { UpdateResult } from 'mongodb';
+
 import { usersCollection } from './db';
 import { UsersType } from '../queryRepositories/user-query-repository';
+import { EmailAdapter } from '../adapters/email-adapter';
 
 export const userRepository = {
   async deleteUser(idReq: string): Promise<boolean> {
@@ -34,5 +37,10 @@ export const userRepository = {
       { projection: { _id: false } },
     );
   },
-
+  async updateConfirmation(code: string): Promise<UpdateResult> {
+    return await usersCollection.updateOne(
+      { 'emailConfirmations.confirmationCode': code },
+      { $set: { 'emailConfirmations.isConfirmed': true } },
+    );
+  },
 };

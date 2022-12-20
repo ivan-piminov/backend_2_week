@@ -10,14 +10,14 @@ import { authMiddleware } from '../auth/middleware/auth-middliware';
 import { inputValidationMiddleware } from '../auth/middleware/input-post-vaditation-middleware';
 import { postService } from '../domains/posts-service';
 import { blogsCollection } from '../repositories/db';
-import { postQueryService } from '../queryRepositories/post-query-repository';
+import { postQueryRepository } from '../queryRepositories/post-query-repository';
 import { PostType } from '../repositories/post-repository-db';
 import { authMiddlewareJWT } from '../auth/middleware/auth-miidleware-jwt';
 
 export const postsRouter = Router({});
 
 postsRouter.get('/', async (req: Request, res: Response) => {
-  const posts = await postQueryService.getPosts(
+  const posts = await postQueryRepository.getPosts(
         req.query.pageNumber as string,
         req.query.pageSize as string,
         req.query.sortBy as string,
@@ -26,7 +26,7 @@ postsRouter.get('/', async (req: Request, res: Response) => {
   return res.status(HTTP_STATUSES.OK_200).send(posts);
 });
 postsRouter.get('/:id', async (req: Request, res: Response) => {
-  const post = await postQueryService.getPost(req.params.id);
+  const post = await postQueryRepository.getPost(req.params.id);
   if (post) {
     return res.status(HTTP_STATUSES.OK_200).send(post);
   }
@@ -151,7 +151,7 @@ postsRouter.post(
 postsRouter.get(
   '/:postId/comments',
   async (req: Request, res: Response) => {
-    const posts = await postQueryService.getComments(
+    const posts = await postQueryRepository.getComments(
           req.params.postId as string,
           req.query.pageNumber as string,
           req.query.pageSize as string,

@@ -2,7 +2,7 @@ import { commentsCollection, postsCollection } from '../repositories/db';
 import { CommentType, PostType } from '../repositories/post-repository-db';
 import { PaginatorType } from './types';
 
-export const postQueryService = {
+export const postQueryRepository = {
   async getPosts(
     pageNumber = '1',
     pageSize = '10',
@@ -42,14 +42,17 @@ export const postQueryService = {
       pageSize: Number(pageSize),
       totalCount,
       items: await commentsCollection
-        .find({ commentToPostId: postId }, { projection: { _id: false, commentToPostId: false } })
+        .find(
+          { commentToPostId: postId },
+          { projection: { _id: false, commentToPostId: false } },
+        )
         .sort({ [sortBy]: sortDirection === 'asc' ? 1 : -1 })
         .skip(skip)
         .limit(Number(pageSize))
         .toArray(),
     };
   },
-  async getPost(idReq: string): Promise<PostType | null> {
-    return await postsCollection.findOne({ id: idReq }, { projection: { _id: false } });
+  async getPost(id: string): Promise<PostType | null> {
+    return await postsCollection.findOne({ id }, { projection: { _id: false } });
   },
 };

@@ -13,7 +13,8 @@ export const blogsRepository = {
     await blogsCollection.insertOne(newBlog);
     return await blogsCollection.findOne(
       { id: newBlog.id },
-      { projection: { _id: false } });
+      { projection: { _id: false } },
+    );
   },
   async updateBlog(
     name: string,

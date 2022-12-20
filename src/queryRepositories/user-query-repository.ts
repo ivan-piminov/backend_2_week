@@ -17,7 +17,7 @@ export type UsersType = {
     }
 }
 
-export const userQueryService = {
+export const userQueryRepository = {
   async getUsers(
     pageNumber = '1',
     pageSize = '10',
@@ -63,5 +63,11 @@ export const userQueryService = {
         },
       },
     );
+  },
+  async findUserByConfirmationCode(code: string): Promise<UsersType | null> {
+    return await usersCollection.findOne({ 'emailConfirmations.confirmationCode': code });
+  },
+  async findUserByEmail(email: string): Promise<UsersType | null> {
+    return await usersCollection.findOne({ 'accountData.email': email });
   },
 };
