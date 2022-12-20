@@ -1,5 +1,5 @@
 import { Request, Response, Router } from 'express';
-import { body, check } from 'express-validator';
+import { body } from 'express-validator';
 
 import { HTTP_STATUSES } from '../helpers/HTTP-statuses';
 import { inputValidationMiddleware } from '../auth/middleware/input-post-vaditation-middleware';
@@ -77,7 +77,9 @@ authRouter.post(
 );
 authRouter.post(
   '/registration-confirmation',
-  check('code')
+  body('code')
+    .isString().withMessage('should be string')
+    .trim()
     .custom(async ({}, { req }) => {
       const res = await userService.confirmEmail(req.query!.code);
       if (!res) {
