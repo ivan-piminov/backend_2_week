@@ -31,8 +31,8 @@ export const userRepository = {
     return await usersCollection.findOne(
       {
         $or: [
-          { email: loginOrEmail },
-          { login: loginOrEmail }],
+          { 'accountData.email': loginOrEmail },
+          { 'accountData.login': loginOrEmail }],
       },
       { projection: { _id: false } },
     );
