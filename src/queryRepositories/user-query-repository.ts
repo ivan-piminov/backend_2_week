@@ -28,8 +28,8 @@ export const userQueryRepository = {
   ): Promise<PaginatorType<UsersType[]>> {
     const totalCount = searchLoginTerm || searchEmailTerm
       ? await usersCollection.count({
-        $or: [{ login: { $regex: searchLoginTerm || '', $options: 'i' } },
-          { email: { $regex: searchEmailTerm || '' } }],
+        $or: [{ 'accountData.login': { $regex: searchLoginTerm || '', $options: 'i' } },
+          { 'accountData.email': { $regex: searchEmailTerm || '' } }],
       })
       : await usersCollection.count({});
     const skip = (Number(pageNumber) - 1) * Number(pageSize);
@@ -42,11 +42,17 @@ export const userQueryRepository = {
         searchLoginTerm || searchEmailTerm
           ? {
             $or: [
-              { login: { $regex: searchLoginTerm || '', $options: 'i' } },
-              { email: { $regex: searchEmailTerm || '' } }],
+              { 'accountData.login': { $regex: searchLoginTerm || '', $options: 'i' } },
+              { 'accountData.email': { $regex: searchEmailTerm || '' } }],
           }
           : {},
-        { projection: { _id: false, passwordHash: false, passwordSalt: false } },
+        {
+          projection: {
+            _id: false,
+            'accountData.passwordHash': false,
+            'accountData.passwordSalt': false,
+          },
+        },
       )
         .sort({ [sortBy]: sortDirection === 'asc' ? 1 : -1 })
         .skip(skip)
@@ -56,10 +62,13 @@ export const userQueryRepository = {
   },
   async getUserById(id: string):Promise<UsersType | null> {
     return await usersCollection.findOne(
-      { id },
+      { 'accountData.id': id },
       {
         projection: {
-          _id: false, passwordHash: false, passwordSalt: false, createdAt: false,
+          _id: false,
+          'accountData.passwordHash': false,
+          'accountData.passwordSalt': false,
+          'accountData.createdAt': false,
         },
       },
     );
