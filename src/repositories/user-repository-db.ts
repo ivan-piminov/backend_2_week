@@ -2,7 +2,6 @@ import { UpdateResult } from 'mongodb';
 
 import { usersCollection } from './db';
 import { UsersType } from '../queryRepositories/user-query-repository';
-import { EmailAdapter } from '../adapters/email-adapter';
 
 export const userRepository = {
   async deleteUser(idReq: string): Promise<boolean> {
@@ -15,7 +14,7 @@ export const userRepository = {
   async addUser(newUser: UsersType): Promise<UsersType | null> {
     await usersCollection.insertOne(newUser);
     return await usersCollection.findOne(
-      { id: newUser.accountData.id },
+      { 'accountData.id': newUser.accountData.id },
       /* переделать ответ с учетом запроса - сам регается юзер или добавляет супер админ */
       {
         projection: {
