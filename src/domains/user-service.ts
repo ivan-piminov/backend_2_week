@@ -47,8 +47,8 @@ export const userService = {
             _id: false,
             id: '$accountData.id',
             login: '$accountData.login',
-            email: 'accountData.email',
-            createdAt: 'accountData.createdAt',
+            email: '$accountData.email',
+            createdAt: '$accountData.createdAt',
           },
         },
       );
