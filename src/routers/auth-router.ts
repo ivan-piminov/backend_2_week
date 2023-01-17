@@ -26,8 +26,8 @@ authRouter.post(
     if (typeof user !== 'boolean') {
       const { refreshToken, accessToken } = await jwtService.createJWT(user.accountData.id);
       await tokenService.saveRefreshJWT(refreshToken, user.accountData.id);
-      res.cookie('refreshToken', refreshToken, { httpOnly: true });
-      return res.status(HTTP_STATUSES.OK_200).send({ accessToken, refreshToken });
+      res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: true });
+      return res.status(HTTP_STATUSES.OK_200).send(accessToken);
     }
     return res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401);
   },
