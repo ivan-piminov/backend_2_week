@@ -1,6 +1,6 @@
 import { MongoClient } from 'mongodb';
 
-import { BlogType } from '../types/types';
+import { BlogType, TokenType } from '../types/types';
 import { CommentType, PostType } from './post-repository-db';
 import { UsersType } from '../queryRepositories/user-query-repository';
 import { settings } from '../settings';
@@ -12,6 +12,7 @@ export const blogsCollection = db.collection<BlogType>('blogs');
 export const postsCollection = db.collection<PostType>('posts');
 export const usersCollection = db.collection<UsersType>('users');
 export const commentsCollection = db.collection<CommentType>('comments');
+export const tokensCollection = db.collection<TokenType>('tokens');
 
 export const runDb = async () => {
   try {

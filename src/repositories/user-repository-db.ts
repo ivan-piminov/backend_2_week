@@ -5,7 +5,7 @@ import { UsersType } from '../queryRepositories/user-query-repository';
 
 export const userRepository = {
   async deleteUser(idReq: string): Promise<boolean> {
-    const result = await usersCollection.deleteOne({ id: idReq });
+    const result = await usersCollection.deleteOne({ 'accountData.id': idReq });
     return result.deletedCount === 1;
   },
   async deleteAllUsers(): Promise<object> {

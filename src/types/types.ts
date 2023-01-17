@@ -5,3 +5,7 @@ export type BlogType = {
     id: string,
     createdAt: string
 }
+export type TokenType = {
+    userId: string
+    token: string
+}

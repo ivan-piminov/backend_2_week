@@ -3,7 +3,7 @@ import { body } from 'express-validator';
 
 import { commentsQueryRepository } from '../queryRepositories/comments-query-repository';
 import { HTTP_STATUSES } from '../helpers/HTTP-statuses';
-import { authMiddlewareJWT } from '../auth/middleware/auth-miidleware-jwt';
+import { authMiddlewareJWTAccess } from '../auth/middleware/auth-miidleware-jwt-access';
 import { commentsService } from '../domains/comment-service';
 import { inputValidationMiddleware } from '../auth/middleware/input-post-vaditation-middleware';
 
@@ -21,7 +21,7 @@ commentsRouter.get(
 );
 commentsRouter.delete(
   '/:commentId',
-  authMiddlewareJWT,
+  authMiddlewareJWTAccess,
   async (req: Request, res: Response) => {
     const result = await commentsService.deleteComment(req.params.commentId, req.user!.accountData.id);
     if (result === 1) {
@@ -35,7 +35,7 @@ commentsRouter.delete(
 );
 commentsRouter.put(
   '/:commentId',
-  authMiddlewareJWT,
+  authMiddlewareJWTAccess,
   body('content')
     .isString().withMessage('should be string')
     .trim()

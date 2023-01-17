@@ -1,7 +1,6 @@
 import jwt from 'jsonwebtoken';
 
 import { settings } from '../settings';
-import { UsersType } from '../queryRepositories/user-query-repository';
 
 /* пришлось расширить модуль jsonwebtoken, т.к. не видел userId */
 declare module 'jsonwebtoken' {
@@ -11,16 +10,22 @@ declare module 'jsonwebtoken' {
 }
 
 export const jwtService = {
-  async createJWT(user: UsersType) {
-    return jwt.sign(
-      { userId: user.accountData.id },
-      settings.JWT_SECRET,
-      { expiresIn: '7d' },
+  async createJWT(userId: string) {
+    const accessToken = jwt.sign(
+      { userId },
+      settings.JWT_SECRET_ACCESS,
+      { expiresIn: '10s' },
     );
+    const refreshToken = jwt.sign(
+      { userId },
+      settings.JWT_SECRET_REFRESH,
+      { expiresIn: '20s' },
+    );
+    return { accessToken, refreshToken };
   },
   async getUserIdByToken(token: string) {
     try {
-      const result = <jwt.UserIDJwtPayload>jwt.verify(token, settings.JWT_SECRET);
+      const result = <jwt.UserIDJwtPayload>jwt.verify(token, settings.JWT_SECRET_ACCESS);
       return result.userId as string;
     } catch (error) {
       return null;

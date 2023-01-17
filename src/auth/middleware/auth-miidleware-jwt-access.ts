@@ -4,7 +4,7 @@ import { HTTP_STATUSES } from '../../helpers/HTTP-statuses';
 import { jwtService } from '../../application/jwt-service';
 import { userQueryRepository } from '../../queryRepositories/user-query-repository';
 
-export const authMiddlewareJWT = async (
+export const authMiddlewareJWTAccess = async (
   req: Request,
   res: Response,
   next: NextFunction,

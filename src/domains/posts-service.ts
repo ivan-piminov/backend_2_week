@@ -1,6 +1,5 @@
 import { postRepository, PostType } from '../repositories/post-repository-db';
-import { blogsCollection } from '../repositories/db';
-import {blogsQueryRepository} from "../queryRepositories/blog-query-repository";
+import { blogsQueryRepository } from '../queryRepositories/blog-query-repository';
 
 export type PostInputModelType = {
     title: string,

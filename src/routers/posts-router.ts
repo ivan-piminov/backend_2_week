@@ -12,7 +12,7 @@ import { postService } from '../domains/posts-service';
 import { blogsCollection } from '../repositories/db';
 import { postQueryRepository } from '../queryRepositories/post-query-repository';
 import { PostType } from '../repositories/post-repository-db';
-import { authMiddlewareJWT } from '../auth/middleware/auth-miidleware-jwt';
+import { authMiddlewareJWTAccess } from '../auth/middleware/auth-miidleware-jwt-access';
 
 export const postsRouter = Router({});
 
@@ -126,7 +126,7 @@ postsRouter.put(
 /* добавление коммента */
 postsRouter.post(
   '/:postId/comments',
-  authMiddlewareJWT,
+  authMiddlewareJWTAccess,
   body('content')
     .isString().withMessage('should be string')
     .trim()

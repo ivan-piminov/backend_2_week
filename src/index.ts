@@ -1,5 +1,6 @@
 import express from 'express';
 import cors from 'cors';
+import cookieParser from 'cookie-parser';
 import { blogsRouter } from './routers/blogs-router';
 import { postsRouter } from './routers/posts-router';
 import { runDb } from './repositories/db';
@@ -13,6 +14,7 @@ const port = process.env.port || 3003;
 
 app.use(cors());
 app.use(express.json());
+app.use(cookieParser());
 app.use('/testing', deleteRouter);
 app.use('/blogs', blogsRouter);
 app.use('/posts', postsRouter);

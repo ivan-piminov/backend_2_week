@@ -5,9 +5,12 @@ import { HTTP_STATUSES } from '../helpers/HTTP-statuses';
 import { inputValidationMiddleware } from '../auth/middleware/input-post-vaditation-middleware';
 import { userService } from '../domains/user-service';
 import { jwtService } from '../application/jwt-service';
-import { authMiddlewareJWT } from '../auth/middleware/auth-miidleware-jwt';
+import { authMiddlewareJWTAccess } from '../auth/middleware/auth-miidleware-jwt-access';
 import { userQueryRepository } from '../queryRepositories/user-query-repository';
 import { usersCollection } from '../repositories/db';
+import { authMiddlewareJWTRefresh } from '../auth/middleware/auth-miidleware-jwt-refresh';
+import { tokenRepository } from '../repositories/token-repository-db';
+import { tokenService } from '../domains/token-service';
 
 export const authRouter = Router({});
 
@@ -20,14 +23,42 @@ authRouter.post(
   inputValidationMiddleware,
   async (req: Request, res: Response) => {
     const user = await userService.checkCredentials(req.body.loginOrEmail, req.body.password);
-    if (user) {
-      const token = await jwtService.createJWT(user);
-      return res.status(HTTP_STATUSES.OK_200).send({ accessToken: token });
+    if (typeof user !== 'boolean') {
+      const { refreshToken, accessToken } = await jwtService.createJWT(user.accountData.id);
+      await tokenService.saveRefreshJWT(refreshToken, user.accountData.id);
+      res.cookie('refreshToken', refreshToken, { httpOnly: true });
+      return res.status(HTTP_STATUSES.OK_200).send({ accessToken, refreshToken });
     }
     return res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401);
   },
 );
-
+authRouter.post(
+  'logout',
+  async (req: Request, res: Response) => {
+    const { refreshToken } = req.cookies;
+    const refreshTokenFromDb = await tokenRepository.findUserByToken(refreshToken);
+    if (refreshTokenFromDb) {
+      await tokenRepository.deleteTokenInfo(refreshToken);
+      return res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
+    }
+    return res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401);
+  },
+);
+authRouter.post(
+  '/refresh-token',
+  authMiddlewareJWTRefresh,
+  async (req: Request, res: Response) => {
+    const { refreshToken } = req.cookies;
+    const userData = await tokenService.checkRefreshJWT(refreshToken);
+    if (typeof userData !== 'boolean') {
+      const { refreshToken: newRefreshToken, accessToken } = await jwtService.createJWT(userData.userId);
+      await tokenRepository.updateRefreshToken(userData.userId, newRefreshToken);
+      res.cookie('refreshToken', newRefreshToken, { httpOnly: true });
+      return res.status(HTTP_STATUSES.OK_200).send({ accessToken });
+    }
+    return res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401);
+  },
+);
 authRouter.post(
   '/registration',
   body('login')
@@ -116,7 +147,7 @@ authRouter.post(
 );
 authRouter.get(
   '/me',
-  authMiddlewareJWT,
+  authMiddlewareJWTAccess,
   async (req: Request, res: Response) => {
     /* id  и юзера есть, т.к. в authMiddlewareJWT проверяется его наличие */
     const user = await userQueryRepository.getUserById(req.user!.accountData.id);
