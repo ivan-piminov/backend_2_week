@@ -40,6 +40,7 @@ authRouter.post(
     if (!req.body) {
       return res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401);
     }
+
     const { refreshToken } = req.cookies;
     res.clearCookie('refreshToken');
     const refreshTokenFromDb = await tokenService.findUserByToken(refreshToken);
