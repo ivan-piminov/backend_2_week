@@ -14,12 +14,12 @@ export const jwtService = {
     const accessToken = jwt.sign(
       { userId },
       settings.JWT_SECRET_ACCESS,
-      { expiresIn: '10' },
+      { expiresIn: 10 },
     );
     const refreshToken = jwt.sign(
       { userId },
       settings.JWT_SECRET_REFRESH,
-      { expiresIn: '20' },
+      { expiresIn: 20 },
     );
     return { accessToken, refreshToken };
   },
