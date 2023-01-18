@@ -51,6 +51,9 @@ authRouter.post(
   '/refresh-token',
   authMiddlewareJWTRefresh,
   async (req: Request, res: Response) => {
+    if (!req.body) {
+      return res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401);
+    }
     const { refreshToken } = req.cookies;
     const userData = await tokenService.checkRefreshJWT(refreshToken);
     if (typeof userData !== 'boolean') {
