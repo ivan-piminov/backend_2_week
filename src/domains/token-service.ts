@@ -7,4 +7,11 @@ export const tokenService = {
   async checkRefreshJWT(token: string) {
     return await tokenRepository.checkToken(token);
   },
+  async findUserByToken(token: string) {
+    return await tokenRepository.findUserByToken(token);
+  },
+  async deleteTokenInfo(token: string) {
+    return await tokenRepository.deleteTokenInfo(token);
+  },
+
 };
