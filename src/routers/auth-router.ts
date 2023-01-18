@@ -1,6 +1,7 @@
 import { Request, Response, Router } from 'express';
 import { body } from 'express-validator';
 
+import jwt from 'jsonwebtoken';
 import { HTTP_STATUSES } from '../helpers/HTTP-statuses';
 import { inputValidationMiddleware } from '../auth/middleware/input-post-vaditation-middleware';
 import { userService } from '../domains/user-service';
@@ -11,6 +12,7 @@ import { usersCollection } from '../repositories/db';
 import { authMiddlewareJWTRefresh } from '../auth/middleware/auth-miidleware-jwt-refresh';
 import { tokenRepository } from '../repositories/token-repository-db';
 import { tokenService } from '../domains/token-service';
+import { settings } from '../settings';
 
 export const authRouter = Router({});
 
@@ -52,6 +54,12 @@ authRouter.post(
     const { refreshToken } = req.cookies;
     const userData = await tokenService.checkRefreshJWT(refreshToken);
     if (typeof userData !== 'boolean') {
+      // eslint-disable-next-line consistent-return
+      jwt.verify(userData.token, `${settings.JWT_SECRET_REFRESH}`, (err) => {
+        if (err) {
+          return res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401);
+        }
+      });
       const { refreshToken: newRefreshToken, accessToken } = await jwtService.createJWT(userData.userId);
       await tokenRepository.updateRefreshToken(userData.userId, newRefreshToken);
       res.cookie('refreshToken', newRefreshToken, { httpOnly: true, maxAge: 20, secure: true });
