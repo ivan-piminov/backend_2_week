@@ -26,19 +26,20 @@ authRouter.post(
     if (typeof user !== 'boolean') {
       const { refreshToken, accessToken } = await jwtService.createJWT(user.accountData.id);
       await tokenService.saveRefreshJWT(refreshToken, user.accountData.id);
-      res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: true });
+      res.cookie('refreshToken', refreshToken, { httpOnly: true, maxAge: 1000 * 20 });
       return res.status(HTTP_STATUSES.OK_200).send({ accessToken });
     }
     return res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401);
   },
 );
 authRouter.post(
-  'logout',
+  '/logout',
   async (req: Request, res: Response) => {
     const { refreshToken } = req.cookies;
-    const refreshTokenFromDb = await tokenRepository.findUserByToken(refreshToken);
+    res.clearCookie('refreshToken');
+    const refreshTokenFromDb = await tokenService.findUserByToken(refreshToken);
     if (refreshTokenFromDb) {
-      await tokenRepository.deleteTokenInfo(refreshToken);
+      await tokenService.deleteTokenInfo(refreshToken);
       return res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
     }
     return res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401);

@@ -20,7 +20,7 @@ export const tokenRepository = {
     return false;
   },
   async updateRefreshToken(userId: string, token: string): Promise<boolean> {
-    await tokensCollection.findOneAndUpdate(
+    await tokensCollection.updateOne(
       { userId },
       { $set: { token } },
     );
