@@ -44,7 +44,17 @@ authRouter.post(
     const { refreshToken } = req.cookies;
     res.clearCookie('refreshToken');
     const refreshTokenFromDb = await tokenService.findUserByToken(refreshToken);
-    if (refreshTokenFromDb) {
+    let error = null;
+    if (typeof refreshTokenFromDb !== 'boolean') {
+      // eslint-disable-next-line consistent-return
+      jwt.verify(refreshTokenFromDb.token, `${settings.JWT_SECRET_REFRESH}`, (err) => {
+        if (err) {
+          error = err;
+          return error;
+        }
+      });
+    }
+    if (refreshTokenFromDb && error === null) {
       await tokenService.deleteTokenInfo(refreshToken);
       return res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
     }
