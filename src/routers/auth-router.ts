@@ -60,13 +60,17 @@ authRouter.post(
     }
     const { refreshToken } = req.cookies;
     const userData = await tokenService.checkRefreshJWT(refreshToken);
+    let error = null;
     if (typeof userData !== 'boolean') {
       // eslint-disable-next-line consistent-return
       jwt.verify(userData.token, `${settings.JWT_SECRET_REFRESH}`, (err) => {
         if (err) {
-          return res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401);
+          error = err;
+          return error;
         }
       });
+    }
+    if (typeof userData !== 'boolean' && error === null) {
       const { refreshToken: newRefreshToken, accessToken } = await jwtService.createJWT(userData.userId);
       await tokenRepository.updateRefreshToken(userData.userId, newRefreshToken);
       res.cookie('refreshToken', newRefreshToken, { httpOnly: true, maxAge: 20, secure: true });
